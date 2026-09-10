@@ -1,41 +1,22 @@
-public class Livre {
+public class Livre extends Document {
+    private int nombrePages;
 
-    // Attributs
-    private String titre;
-    private String auteur;
-    private boolean disponible;
-
-    // Constructeur
-    public Livre(String titre, String auteur) {
-        this.titre = titre;
-        this.auteur = auteur; 
-        this.disponible = true;
+    public Livre(int numero, String titre, String auteur, int nombrePages) {
+        super(numero, titre, auteur);
+        this.nombrePages = nombrePages;
     }
 
-    // Méthode pour emprunter le livre
-    public void emprunter() {
-        if (disponible) {
-            disponible = false;
-            System.out.println("Le livre \"" + titre + "\" a été emprunté.");
-        } else {
-            System.out.println("Le livre \"" + titre + "\" est déjà emprunté.");
-        }
+    public int getNombrePages() {
+        return nombrePages;
     }
 
-    // Méthode pour retourner le livre
-    public void retourner() {
-        if (!disponible) {
-            disponible = true;
-            System.out.println("Le livre \"" + titre + "\" a été retourné.");
-        } else {
-            System.out.println("Le livre \"" + titre + "\" est déjà disponible.");
-        }
+    @Override
+    public int dureeMaxPret() {
+        return 21; // 21 jours pour un livre
     }
 
-    // Méthode pour afficher les informations du livre
-    public void afficherInformations() {
-        System.out.println("Titre : " + titre);
-        System.out.println("Auteur : " + auteur);
-        System.out.println("Disponible : " + disponible);
+    @Override
+    public String toString() {
+        return "Livre [" + super.toString() + ", Pages=" + nombrePages + ", Durée prêt=" + dureeMaxPret() + " jours]";
     }
 }
