@@ -37,6 +37,6 @@ public abstract class Document {
     // Redéfinition de toString
     @Override
     public String toString() {
-        return "Document [N°=" + numero + ", Titre=" + titre + ", Auteur=" + auteur + ", Disponible=" + disponible + "]";
+        return "Document [N°=" + numero + ", Titree=" + titre + ", Auteur=" + auteur + ", Disponible=" + disponible + "]";
     }
 }
