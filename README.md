@@ -1,3 +1,5 @@
+* SUJET: **Bibliothèque de prêt :** 
+
 •  Fondement de la relation « est un » : L'architecture repose sur la classe mère Document car un livre est un document et un périodique est un document. Cette hiérarchie mutualise les attributs universels (numéro, titre, disponibilité) ainsi que la gestion des emprunts déjà validée, tandis que l'auteur est conservé via une composition rigoureuse. 
 •  Justification du choix d'une classe abstraite : La classe Document est déclarée comme abstraite (abstract) car il n'existe pas de « document » générique dans la réalité d'une bibliothèque : on manipule toujours des objets concrets (livre ou périodique). Cette abstraction empêche toute instanciation invalide et formalise un contrat obligatoire pour les classes filles.
 •  Éléments communs et variations dynamiques :
@@ -9,7 +11,11 @@
 * **Méthodologie :** En raison de contraintes matérielles initiales en présentiel, l'équipe a travaillé sur une machine unique en effectuant une rotation régulière des rôles sur VS Code. 
 * **Traçabilité :** Les contributions de chaque membre ont été structurées à travers des commits séquentiels et des branches de travail Git dédiées (`feature/`) avant d'être centralisées proprement sur le dépôt GitHub.
 
+*  **Groupe :** 4
+
 ## Répartition des tâches et rôles
 * **ZIO Jolène Shirel :** Conception de la hiérarchie des classes (`Document`, `Livre`, `Periodique`) et premier commit.
 * **OUEDRAOGO Murielle :** Implémentation des constructeurs (`super()`), de la méthode `dureeMaxPret()` et de `toString()`.
 * **KARGOUGOU Sidi:** Réalisation des essais polymorphes dans la classe `Main` et rédaction de la justification technique.
+
+  
