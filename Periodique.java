@@ -12,7 +12,7 @@ public class Periodique extends Document {
 
     @Override
     public int dureeMaxPret() {
-        return 7; // 7 jours pour un périodique
+        return 7;
     }
 
     @Override
