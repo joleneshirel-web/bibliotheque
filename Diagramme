@@ -1,0 +1,22 @@
+-------------------------              -------------------------------------
+|      Utilisateur      |              | <<interface>>                     |
+-------------------------              |            Empruntable            |
+| - id: int             |              -------------------------------------
+| - nom: String         |              | + emprunter(u: Utilisateur): bool |
+-------------------------              | + retourner(): void               |
+| + getNom(): String    |              | + estEmprunte(): boolean          |
+| + toString(): String  |              | + getEmprunteur(): Utilisateur    |
+-------------------------              -------------------------------------
+           ^                                            ^
+           |                                            | (Implémente)
+           | (Association: 0..1)                        |
+---------------------------------------------------------
+|                       Document                        |
+---------------------------------------------------------
+| - numero: int                                         |
+| - titre: String                                       |
+| - emprunteur: Utilisateur                             | <--- LE LIEN EST ICI
+---------------------------------------------------------
+| + emprunter(u: Utilisateur): boolean                  |
+| + retourner(): void                                   |
+---------------------------------------------------------
