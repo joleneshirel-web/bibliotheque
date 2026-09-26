@@ -12,7 +12,7 @@ public class Livre extends Document {
 
     @Override
     public int dureeMaxPret() {
-        return 21; // 21 jours pour un livre
+        return 21;
     }
 
     @Override
