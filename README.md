@@ -5,7 +5,7 @@
 •  Éléments communs et variations dynamiques :
 •	Ce qui est commun : L'ensemble des métadonnées d'identification, l'état de disponibilité et les règles de transaction (emprunt et retour) s'appliquent uniformément à tous les sous-types. 
 •	Ce qui varie : Les attributs spécifiques (le nombre de pages pour le livre, le numéro de parution pour le périodique) et le comportement métier critique qu'est la durée maximale de prêt (dureeMaxPret(), fixée à 21 jours pour le livre et 7 jours pour le périodique).
-•  Application du polymorphisme : Le système exploite des références de type Document pour manipuler indifféremment des livres et des périodiques. Lors du parcours des objets ou de l'appel de dureeMaxPret() et de toString(), le programme déclenche automatiquement la version adaptée à l'objet réel, garantissant un code évolutif et propre, entièrement dépourvu de tests de type (instanceof).
+•  Application du polymorphisme : Le système exploite des références de type Document pour manipuler indifféremment des livres et des périodiques. Lors du parcours des objets ou de l'appel de dureeMaxPret() et de toString(), le programme déclenche automatiquement la version adaptée à l'objet réel, garantissant un code évolutif et propre, entièrement dépourvu de tests de type (instanceof ).
 
 ## Organisation du travail et traçabilité collaborative
 * **Méthodologie :**  Chaque membre de l'équipe a travaillé de son côté sur la conception de ses modules respectifs, avant de procéder à la mise en commun des différentes classes pour intégration finale.
