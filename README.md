@@ -14,8 +14,20 @@
 *  **Groupe :** 4
 
 ## Répartition des tâches et rôles
-* **ZIO Jolène Shirel :** Conception de la hiérarchie des classes (`Document`, `Livre`, `Periodique`) et premier commit.
-* **OUEDRAOGO Murielle :** Implémentation des constructeurs (`super()`), de la méthode `dureeMaxPret()` et de `toString()`.
-* **KARGOUGOU Sidi:** Réalisation des essais polymorphes dans la classe `Main` et rédaction de la justification technique.
+
+• ZIO Jolène Shirel : Conception de l'architecture de base, formalisation des contrats, modélisation et gestion de l'état.
+  - Conception, modélisation et ajout du diagramme de classes UML (intégration des relations, de la hiérarchie et des cardinalités 0..1).
+  - Implémentation de l'interface Empruntable (définition des méthodes de prêt, de retour, de suivi et de durée).
+  - Développement de la classe abstraite Document (gestion des attributs universels, des états d'emprunt et de la méthode clone()).
+
+• OUEDRAOGO Murielle : Implémentation des entités concrètes et des profils utilisateurs.
+  - Développement de la classe fille Livre (gestion spécifique du nombre de pages et de la règle des 21 jours).
+  - Développement de la classe fille Periodique (gestion du numéro de parution et de la règle des 7 jours).
+  - Développement de la classe Utilisateur (gestion des identifiants et des informations personnelles).
+
+• KARGOUGOU Sidi : Intégration globale, scénarios de test et validation comportementale.
+  - Développement de la classe Main (mise en œuvre du polymorphisme, test du tableau de documents).
+  - Scénarisation et validation des cas limites d'emprunt (tentative de double emprunt, retour effectif et nouvel emprunt).
+  - Test du mécanisme de clonage et de l'indépendance des objets en mémoire.
 
   
