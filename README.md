@@ -25,9 +25,7 @@
   - Développement de la classe fille Periodique (gestion du numéro de parution et de la règle des 7 jours).
   - Développement de la classe Utilisateur (gestion des identifiants et des informations personnelles).
 
-• KARGOUGOU Sidi : Intégration globale, scénarios de test et validation comportementale.
-  - Développement de la classe Main (mise en œuvre du polymorphisme, test du tableau de documents).
-  - Scénarisation et validation des cas limites d'emprunt (tentative de double emprunt, retour effectif et nouvel emprunt).
-  - Test du mécanisme de clonage et de l'indépendance des objets en mémoire.
-
+• KARGOUGOU Sidi : Contribution conceptuelle et théorique.
+  - Participation active à la réflexion conjointe sur la structure et les scénarios de test.
+  - En raison de problèmes de santé et de contraintes matérielles (ordinateur en réparation) l'empêchant de contribuer directement sur le dépôt, la saisie technique a été assurée par l'équipe (puis intégrée et poussée sur GitHub par Murielle suite au travail préparatoire réalisé ensemble en amont), tout en maintenant pleinement sa participation intellectuelle au projet.
   
