@@ -8,9 +8,9 @@
 •  Application du polymorphisme : Le système exploite des références de type Document pour manipuler indifféremment des livres et des périodiques. Lors du parcours des objets ou de l'appel de dureeMaxPret() et de toString(), le programme déclenche automatiquement la version adaptée à l'objet réel, garantissant un code évolutif et propre, entièrement dépourvu de tests de type (instanceof).
 
 ## Organisation du travail et traçabilité collaborative
-* **Méthodologie :** En raison de contraintes matérielles initiales en présentiel, l'équipe a travaillé sur une machine unique en effectuant une rotation régulière des rôles sur VS Code. 
-* **Traçabilité :** Les contributions de chaque membre ont été structurées à travers des commits séquentiels et des branches de travail Git dédiées (`feature/`) avant d'être centralisées proprement sur le dépôt GitHub.
+* **Méthodologie :**  Chaque membre de l'équipe a travaillé de son côté sur la conception de ses modules respectifs, avant de procéder à la mise en commun des différentes classes pour intégration finale.
 
+* **Traçabilité :** Les contributions ont été centralisées proprement sur le dépôt GitHub à travers des commits structurés.
 *  **Groupe :** 4
 
 ## Répartition des tâches et rôles
