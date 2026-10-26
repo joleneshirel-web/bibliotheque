@@ -1,67 +1,123 @@
+```java
 public abstract class Document implements Empruntable, Cloneable {
-    private int numero;
-    private String titre;
-    private String auteur;
+
+    // Attributs d'identification
+    private final int numero;
+    private final String titre;
+    private final String auteur;
+
+    // État du document
     private boolean disponible;
-    private boolean estEmprunte;
     private Utilisateur emprunteur;
 
     public Document(int numero, String titre, String auteur) {
+
+        // Vérification des invariants
+        if (numero <= 0) {
+            throw new IllegalArgumentException(
+                "Le numéro du document doit être positif."
+            );
+        }
+
+        if (titre == null || titre.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                "Le titre ne doit pas être vide."
+            );
+        }
+
+        if (auteur == null || auteur.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                "L'auteur ne doit pas être vide."
+            );
+        }
+
         this.numero = numero;
-        this.titre = titre;
-        this.auteur = auteur;
+        this.titre = titre.trim();
+        this.auteur = auteur.trim();
+
+        // Un nouveau document est disponible
         this.disponible = true;
-        this.estEmprunte = false;
         this.emprunteur = null;
     }
-    public int getNumero() { return numero; }
-    public String getTitre() { return titre; }
-    public String getAuteur() { return auteur; }
-    public boolean isDisponible() { return disponible; }
-    public void setDisponible(boolean disponible) { this.disponible = disponible; }
+
+    // Accesseurs
+    public int getNumero() {
+        return numero;
+    }
+
+    public String getTitre() {
+        return titre;
+    }
+
+    public String getAuteur() {
+        return auteur;
+    }
+
+    public boolean isDisponible() {
+        return disponible;
+    }
 
     @Override
     public Utilisateur getEmprunteur() {
         return emprunteur;
     }
 
+    // Gestion des emprunts
     @Override
-    public boolean emprunter(Utilisateur u) {
-        if (!estEmprunte && u != null) {
-            estEmprunte = true;
-            disponible = false;
-            emprunteur = u;
-            return true;
+    public boolean emprunter(Utilisateur utilisateur) {
+
+        if (!disponible || utilisateur == null) {
+            return false;
         }
-        return false; 
+
+        this.disponible = false;
+        this.emprunteur = utilisateur;
+
+        return true;
     }
 
     @Override
     public void retourner() {
-        this.estEmprunte = false;
-        this.disponible = true;
-        this.emprunteur = null;
+
+        if (!disponible) {
+            this.disponible = true;
+            this.emprunteur = null;
+        }
     }
 
     @Override
     public boolean estEmprunte() {
-        return estEmprunte;
+        return !disponible;
     }
 
+    // Chaque classe fille définit sa durée maximale de prêt
     @Override
     public abstract int dureeMaxPret();
 
+    // Clonage
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 
+    // Représentation textuelle
     @Override
     public String toString() {
-        String info = "Document [N°=" + numero + ", Titre=" + titre + ", Auteur=" + auteur + ", Disponible=" + disponible + "]";
-        if (estEmprunte && emprunteur != null) {
-            info += " -> Emprunté par : " + emprunteur.getNom();
+
+        String informations =
+            "Document [N°=" + numero
+            + ", Titre=" + titre
+            + ", Auteur=" + auteur
+            + ", Disponible=" + disponible;
+
+        if (emprunteur != null) {
+            informations +=
+                ", Emprunté par=" + emprunteur.getNom();
         }
-        return info;
+
+        informations += "]";
+
+        return informations;
     }
 }
+```
