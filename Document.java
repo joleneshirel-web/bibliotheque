@@ -1,4 +1,4 @@
-```java
+
 public abstract class Document implements Empruntable, Cloneable {
 
     // Attributs d'identification
@@ -120,4 +120,3 @@ public abstract class Document implements Empruntable, Cloneable {
         return informations;
     }
 }
-```
