@@ -3,8 +3,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Utilisateur u1 = new Utilisateur(1, "Jolene");
-        Utilisateur u2 = new Utilisateur(2, "Sidi");
+        Utilisateur u1 = new Utilisateur(1, "Jolene", "jolene@example.com");
+        Utilisateur u2 = new Utilisateur(2, "Sidi", "sidi@example.com");
 
         System.out.println("=== Test des documents ===");
 
@@ -38,7 +38,7 @@ public class Main {
         }
 
         try {
-            new Utilisateur(0, "Awa");
+            new Utilisateur(0, "Awa", "awa@example.com");
             System.out.println("Erreur : identifiant invalide accepte");
         } catch (IllegalArgumentException e) {
             System.out.println("Test identifiant utilisateur : OK");
@@ -74,3 +74,4 @@ public class Main {
         }
     }
 }
+

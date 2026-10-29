@@ -1,46 +1,40 @@
 
-public abstract class Document implements Empruntable, Cloneable {
+public abstract class Document implements Pretable, Cloneable {
 
-    // Attributs d'identification
     private final int numero;
     private final String titre;
     private final String auteur;
 
-    // État du document
     private boolean disponible;
     private Utilisateur emprunteur;
 
     public Document(int numero, String titre, String auteur) {
 
-        // Vérification des invariants
         if (numero <= 0) {
             throw new IllegalArgumentException(
-                "Le numéro du document doit être positif."
+                "Le numero du document doit etre positif."
             );
         }
 
         if (titre == null || titre.trim().isEmpty()) {
             throw new IllegalArgumentException(
-                "Le titre ne doit pas être vide."
+                "Le titre ne doit pas etre vide."
             );
         }
 
         if (auteur == null || auteur.trim().isEmpty()) {
             throw new IllegalArgumentException(
-                "L'auteur ne doit pas être vide."
+                "L'auteur ne doit pas etre vide."
             );
         }
 
         this.numero = numero;
         this.titre = titre.trim();
         this.auteur = auteur.trim();
-
-        // Un nouveau document est disponible
         this.disponible = true;
         this.emprunteur = null;
     }
 
-    // Accesseurs
     public int getNumero() {
         return numero;
     }
@@ -62,7 +56,6 @@ public abstract class Document implements Empruntable, Cloneable {
         return emprunteur;
     }
 
-    // Gestion des emprunts
     @Override
     public boolean emprunter(Utilisateur utilisateur) {
 
@@ -77,12 +70,16 @@ public abstract class Document implements Empruntable, Cloneable {
     }
 
     @Override
-    public void retourner() {
+    public boolean retourner() {
 
-        if (!disponible) {
-            this.disponible = true;
-            this.emprunteur = null;
+        if (disponible) {
+            return false;
         }
+
+        disponible = true;
+        emprunteur = null;
+
+        return true;
     }
 
     @Override
@@ -90,17 +87,14 @@ public abstract class Document implements Empruntable, Cloneable {
         return !disponible;
     }
 
-    // Chaque classe fille définit sa durée maximale de prêt
     @Override
     public abstract int dureeMaxPret();
 
-    // Clonage
     @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+    public Document clone() throws CloneNotSupportedException {
+        return (Document) super.clone();
     }
 
-    // Représentation textuelle
     @Override
     public String toString() {
 
@@ -111,12 +105,10 @@ public abstract class Document implements Empruntable, Cloneable {
             + ", Disponible=" + disponible;
 
         if (emprunteur != null) {
-            informations +=
-                ", Emprunté par=" + emprunteur.getNom();
+            informations += ", Emprunte par=" + emprunteur.getNom();
         }
 
-        informations += "]";
-
-        return informations;
+        return informations + "]";
     }
 }
+

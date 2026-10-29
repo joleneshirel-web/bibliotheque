@@ -3,17 +3,12 @@ public class Periodique extends Document {
 
     private final int numeroParution;
 
-    public Periodique(
-            int numero,
-            String titre,
-            String auteur,
-            int numeroParution) {
-
+    public Periodique(int numero, String titre, String auteur, int numeroParution) {
         super(numero, titre, auteur);
 
         if (numeroParution <= 0) {
             throw new IllegalArgumentException(
-                "Le numéro de parution doit être strictement positif."
+                "Le numero de parution doit etre positif."
             );
         }
 
@@ -24,9 +19,6 @@ public class Periodique extends Document {
         return numeroParution;
     }
 
-    /**
-     * Un périodique peut être emprunté pendant 7 jours maximum.
-     */
     @Override
     public int dureeMaxPret() {
         return 7;
@@ -35,8 +27,8 @@ public class Periodique extends Document {
     @Override
     public String toString() {
         return "Periodique [" + super.toString()
-                + ", N° Parution=" + numeroParution
-                + ", Durée prêt=" + dureeMaxPret() + " jours]";
+                + ", Numero de parution = " + numeroParution
+                + ", Duree du pret = " + dureeMaxPret() + " jours]";
     }
 }
-```
+

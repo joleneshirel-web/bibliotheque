@@ -1,4 +1,3 @@
-
 public class Livre extends Document {
 
     private final int nombrePages;

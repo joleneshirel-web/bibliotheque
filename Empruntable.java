@@ -1,8 +1,14 @@
 
 public interface Empruntable {
+
     boolean emprunter(Utilisateur utilisateur);
-    void retourner();
+
+    boolean retourner();
+
     boolean estEmprunte();
+
     int dureeMaxPret();
+
     Utilisateur getEmprunteur();
 }
+
