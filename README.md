@@ -2,6 +2,14 @@
 
 **Groupe 4 — Projet de Programmation Orientée Objet (Java)**
 
+---
+
+## 👥 Membres du Groupe
+
+* **ZIO Jolène Shirel** (Matricule : `20240007`) — Conception de l'architecture de base, modélisation et intégration du diagramme de classes UML, et implémentation de l'interface `Empruntable` et de la classe abstraite `Document`.
+* **OUEDRAOGO Murielle** — Développement des classes concrètes filles (`Livre`, `Periodique`) et de la classe `Utilisateur`.
+* **KARGOUGOU Sidi** — Contribution conceptuelle, participation à la réflexion conjointe sur la structure, les invariants et les scénarios de test *(contribution intellectuelle réalisée en amont)*.
+
 ## 1. Présentation du projet
 
 Ce projet consiste à développer une application Java permettant de modéliser le fonctionnement d'une bibliothèque de prêt.
