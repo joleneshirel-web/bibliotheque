@@ -8,7 +8,7 @@
 
 * **ZIO Jolène Shirel** (Matricule : `20240007`) — Conception de l'architecture de base, modélisation et intégration du diagramme de classes UML, et implémentation de l'interface `Empruntable` et de la classe abstraite `Document`.
 * **OUEDRAOGO Murielle** (Matricule : `20240209`) — Développement des classes concrètes filles (`Livre`, `Periodique`) et de la classe `Utilisateur`.
-* **KARGOUGOU Sidi** (Matricule : `20240153`) — Contribution conceptuelle, participation à la réflexion conjointe sur la structure, les invariants et les scénarios de test *(contribution intellectuelle réalisée en amont)*.
+* **KARGOUGOU Sidi** (Matricule : `20240153`) — Participation active à l'ensemble du travail (conception, logique métier, invariants et tests). *Note : En raison de pannes matérielles récurrentes sur son ordinateur, ses contributions ont été intégrées et déposées sur GitHub depuis les ordinateurs de ses coéquipiers, ce qui explique l'absence de commits à son nom dans l'historique Git.*
 
 ## 1. Présentation du projet
 
