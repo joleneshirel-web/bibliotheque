@@ -1,4 +1,3 @@
-
 public interface Empruntable {
 
     boolean emprunter(Utilisateur utilisateur);
