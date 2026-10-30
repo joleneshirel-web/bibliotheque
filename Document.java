@@ -1,4 +1,3 @@
-
 public abstract class Document implements Pretable, Cloneable {
 
     private final int numero;
