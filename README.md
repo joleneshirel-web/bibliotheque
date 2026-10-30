@@ -1,31 +1,145 @@
-* SUJET: **Bibliothèque de prêt :** 
+# Projet Bibliothèque de prêt
 
-•  Fondement de la relation « est un » : L'architecture repose sur la classe mère Document car un livre est un document et un périodique est un document. Cette hiérarchie mutualise les attributs universels (numéro, titre, disponibilité) ainsi que la gestion des emprunts déjà validée, tandis que l'auteur est conservé via une composition rigoureuse. 
-•  Justification du choix d'une classe abstraite : La classe Document est déclarée comme abstraite (abstract) car il n'existe pas de « document » générique dans la réalité d'une bibliothèque : on manipule toujours des objets concrets (livre ou périodique). Cette abstraction empêche toute instanciation invalide et formalise un contrat obligatoire pour les classes filles.
-•  Éléments communs et variations dynamiques :
-•	Ce qui est commun : L'ensemble des métadonnées d'identification, l'état de disponibilité et les règles de transaction (emprunt et retour) s'appliquent uniformément à tous les sous-types. 
-•	Ce qui varie : Les attributs spécifiques (le nombre de pages pour le livre, le numéro de parution pour le périodique) et le comportement métier critique qu'est la durée maximale de prêt (dureeMaxPret(), fixée à 21 jours pour le livre et 7 jours pour le périodique).
-•  Application du polymorphisme : Le système exploite des références de type Document pour manipuler indifféremment des livres et des périodiques. Lors du parcours des objets ou de l'appel de dureeMaxPret() et de toString(), le programme déclenche automatiquement la version adaptée à l'objet réel, garantissant un code évolutif et propre, entièrement dépourvu de tests de type (instanceof ).
+**Groupe 4 — Projet de Programmation Orientée Objet (Java)**
 
-## Organisation du travail et traçabilité collaborative
-* **Méthodologie :**  Chaque membre de l'équipe a travaillé de son côté sur la conception de ses modules respectifs, avant de procéder à la mise en commun des différentes classes pour intégration finale.
+## 1. Présentation du projet
 
-* **Traçabilité :** Les contributions ont été centralisées proprement sur le dépôt GitHub à travers des commits structurés.
-*  **Groupe :** 4
+Ce projet consiste à développer une application Java permettant de modéliser le fonctionnement d'une bibliothèque de prêt.
 
-## Répartition des tâches et rôles
+L'application permet de représenter différents types de documents, de gérer leur disponibilité, d'effectuer des emprunts et des retours, et d'associer chaque emprunt à un utilisateur.
 
-• ZIO Jolène Shirel : Conception de l'architecture de base, formalisation des contrats, modélisation et gestion de l'état.
-  - Conception, modélisation et ajout du diagramme de classes UML (intégration des relations, de la hiérarchie et des cardinalités 0..1).
-  - Implémentation de l'interface Empruntable (définition des méthodes de prêt, de retour, de suivi et de durée).
-  - Développement de la classe abstraite Document (gestion des attributs universels, des états d'emprunt et de la méthode clone()).
+Le projet met en œuvre plusieurs concepts fondamentaux de la programmation orientée objet : encapsulation, abstraction, héritage, polymorphisme et interfaces.
 
-• OUEDRAOGO Murielle : Implémentation des entités concrètes et des profils utilisateurs.
-  - Développement de la classe fille Livre (gestion spécifique du nombre de pages et de la règle des 21 jours).
-  - Développement de la classe fille Periodique (gestion du numéro de parution et de la règle des 7 jours).
-  - Développement de la classe Utilisateur (gestion des identifiants et des informations personnelles).
+## 2. Architecture du projet
 
-• KARGOUGOU Sidi : Contribution conceptuelle et théorique.
-  - Participation active à la réflexion conjointe sur la structure et les scénarios de test.
-  - En raison de problèmes de santé et de contraintes matérielles (ordinateur en réparation) l'empêchant de contribuer directement sur le dépôt, la saisie technique a été assurée par l'équipe (puis intégrée et poussée sur GitHub par Murielle suite au travail préparatoire réalisé ensemble en amont), tout en maintenant pleinement sa participation intellectuelle au projet.
+L'architecture repose sur une classe abstraite `Document`, qui constitue la classe mère des différents types de documents.
+
+### Organisation des classes et interfaces
+
+* **Empruntable** : interface définissant les opérations liées à l'emprunt, au retour et au suivi de l'état d'un document.
+* **Pretable** : interface qui étend `Empruntable`.
+* **Document** : classe abstraite implémentant `Pretable` et `Cloneable`. Elle centralise les informations communes aux documents ainsi que la gestion des emprunts.
+* **Livre** : classe fille de `Document`, qui ajoute le nombre de pages et définit une durée maximale de prêt de 21 jours.
+* **Periodique** : classe fille de `Document`, qui ajoute le numéro de parution et définit une durée maximale de prêt de 7 jours.
+* **Utilisateur** : classe représentant les personnes pouvant emprunter des documents.
+* **Main** : classe permettant de lancer et de présenter le fonctionnement de l'application.
+* **Tests** : classe regroupant les vérifications du fonctionnement des différentes fonctionnalités.
+
+## 3. Principes de programmation orientée objet utilisés
+
+### Encapsulation
+
+Les attributs des classes sont privés afin de protéger les données. L'accès aux informations se fait principalement à travers des méthodes dédiées.
+
+### Abstraction
+
+La classe `Document` est abstraite, car elle représente une notion générale qui ne doit pas être instanciée directement. Elle impose notamment aux classes filles de définir leur propre durée maximale de prêt.
+
+### Héritage
+
+Les classes `Livre` et `Periodique` héritent de `Document`. Elles réutilisent ainsi les attributs et les comportements communs tout en ajoutant leurs caractéristiques spécifiques.
+
+### Polymorphisme
+
+Les documents peuvent être manipulés à travers des références de type `Document`. Les méthodes redéfinies, notamment `dureeMaxPret()` et `toString()`, sont exécutées selon le type réel de l'objet.
+
+### Interfaces
+
+L'interface `Empruntable` définit les opérations nécessaires à la gestion des emprunts. L'interface `Pretable` étend ce contrat et est implémentée par `Document`.
+
+## 4. Gestion des emprunts et invariants
+
+Le fonctionnement du système repose sur plusieurs règles :
+
+* Le numéro d'un document doit être strictement positif.
+* Le titre et l'auteur d'un document ne doivent être ni nuls ni vides.
+* Le nombre de pages d'un livre doit être strictement positif.
+* Le numéro de parution d'un périodique doit être strictement positif.
+* L'identifiant d'un utilisateur doit être strictement positif.
+* Le nom d'un utilisateur ne doit pas être vide.
+* L'adresse électronique d'un utilisateur doit respecter le format attendu.
+* Un document disponible peut être emprunté par un utilisateur valide.
+* Un document déjà emprunté ne peut pas faire l'objet d'un nouvel emprunt.
+* Lorsqu'un document est retourné, il redevient disponible et son emprunteur est réinitialisé.
+
+Les opérations d'emprunt et de retour renvoient un booléen permettant de connaître leur résultat.
+
+## 5. Durées maximales de prêt
+
+| Type de document | Durée maximale |
+| ---------------- | -------------: |
+| Livre            |       21 jours |
+| Périodique       |        7 jours |
+
+Ces durées sont définies par redéfinition de la méthode `dureeMaxPret()` dans chaque classe fille.
+
+## 6. Tests et vérifications
+
+La classe `Tests.java` regroupe les vérifications portant notamment sur :
+
+* La structure des classes et des interfaces.
+* L'initialisation des objets.
+* Les validations des données.
+* Les durées maximales de prêt.
+* Les opérations d'emprunt et de retour.
+* Le refus d'un emprunt lorsque le document est indisponible.
+* La gestion de l'emprunteur.
+* Le comportement de la méthode `clone()`.
+
+**Résultat obtenu : 41 tests réussis sur 41.**
+
+## 7. Compilation et exécution
+
+Le projet nécessite un JDK Java installé.
+
+Depuis le répertoire contenant les fichiers `.java`, ouvrir un terminal et exécuter :
+
+```bash
+javac *.java
+```
+
+Pour lancer l'application :
+
+```bash
+java Main
+```
+
+Pour exécuter les tests :
+
+```bash
+java Tests
+```
+
+## 8. Diagramme UML
+
+Le diagramme de classes UML présente les classes, les interfaces, les relations d'héritage, d'implémentation et l'association entre les documents et les utilisateurs.
+
+Il est disponible dans le dossier `Diagramme` du projet.
+
+## 9. Organisation du dépôt
+
+```text
+bibliotheque/
+│
+├── Document.java
+├── Empruntable.java
+├── Pretable.java
+├── Livre.java
+├── Periodique.java
+├── Utilisateur.java
+├── Main.java
+├── Tests.java
+├── README.md
+│
+└── Diagramme/
+    ├── Diagramme_classes_Bibliotheque_Jalon1_final.puml
+    └── Diagramme_classes_Bibliotheque_Jalon1_final.png
+```
+
+## 10. Informations sur le projet
+
+* **Projet :** Bibliothèque de prêt
+* **Groupe :** 4
+* **Langage :** Java
+* **Version :** Jalon 1out en maintenant pleinement sa participation intellectuelle au projet.
   
