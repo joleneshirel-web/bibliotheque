@@ -7,8 +7,8 @@
 ## 👥 Membres du Groupe
 
 * **ZIO Jolène Shirel** (Matricule : `20240007`) — Conception de l'architecture de base, modélisation et intégration du diagramme de classes UML, et implémentation de l'interface `Empruntable` et de la classe abstraite `Document`.
-* **OUEDRAOGO Murielle** — Développement des classes concrètes filles (`Livre`, `Periodique`) et de la classe `Utilisateur`.
-* **KARGOUGOU Sidi** — Contribution conceptuelle, participation à la réflexion conjointe sur la structure, les invariants et les scénarios de test *(contribution intellectuelle réalisée en amont)*.
+* **OUEDRAOGO Murielle** (Matricule : `20240209`) — Développement des classes concrètes filles (`Livre`, `Periodique`) et de la classe `Utilisateur`.
+* **KARGOUGOU Sidi** (Matricule : `20240153`) — Contribution conceptuelle, participation à la réflexion conjointe sur la structure, les invariants et les scénarios de test *(contribution intellectuelle réalisée en amont)*.
 
 ## 1. Présentation du projet
 
