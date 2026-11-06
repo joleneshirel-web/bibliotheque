@@ -1,153 +1,103 @@
-# Projet Bibliothèque de prêt
+# Bibliothèque de prêt — Jalon 2 : Composition et polymorphisme
 
-**Groupe 4 — Projet de Programmation Orientée Objet (Java)**
+Groupe 4 — Projet Java de programmation orientée objet.
 
----
+## 1. Objectif du jalon
 
-## 👥 Membres du Groupe
+Ce jalon porte uniquement sur les choix entre héritage et composition, le type abstrait `Document`, ses sous-types `Livre` et `Periodique`, la composition entre `Livre` et ses auteurs, la redéfinition de `dureePret()` et `toString()`, ainsi que la vérification du principe de substitution. Les interfaces déjà présentes au Jalon 1 sont conservées sans développement supplémentaire. Les collections du framework Java ne sont pas introduites ici.
 
-* **ZIO Jolène Shirel** (Matricule : `20240007`) — Conception de l'architecture de base, modélisation et intégration du diagramme de classes UML, et implémentation de l'interface `Empruntable` et de la classe abstraite `Document`.
-* **OUEDRAOGO Murielle** (Matricule : `20240209`) — Développement des classes concrètes filles (`Livre`, `Periodique`) et de la classe `Utilisateur`.
-* **KARGOUGOU Sidi** (Matricule : `20240153`) — Participation active à l'ensemble du travail (conception, logique métier, invariants et tests). *Note : En raison de pannes matérielles récurrentes sur son ordinateur, ses contributions ont été intégrées et déposées sur GitHub depuis les ordinateurs de ses coéquipiers, ce qui explique l'absence de commits à son nom dans l'historique Git.*
+## 2. Choix d'héritage : `Document`, `Livre` et `Periodique`
 
-## 1. Présentation du projet
+`Livre` et `Periodique` héritent de `Document` parce que chacun est un document. Cette relation « est-un » est justifiée : les deux sous-types possèdent un numéro, un titre, un état de disponibilité et peuvent être empruntés puis retournés.
 
-Ce projet consiste à développer une application Java permettant de modéliser le fonctionnement d'une bibliothèque de prêt.
+`Document` est abstraite : le modèle ne crée pas de document générique concret. Elle centralise les informations et les opérations communes. Elle déclare également `dureePret()` comme méthode abstraite, car chaque sous-type détermine sa propre durée.
 
-L'application permet de représenter différents types de documents, de gérer leur disponibilité, d'effectuer des emprunts et des retours, et d'associer chaque emprunt à un utilisateur.
+Les règles générales d'emprunt et de retour restent dans `Document`. Nous ne créons pas de sous-classes artificielles pour représenter les règles de prêt : les conditions et les changements d'état sont communs aux deux types de documents. Seule la durée varie et relève du polymorphisme.
 
-Le projet met en œuvre plusieurs concepts fondamentaux de la programmation orientée objet : encapsulation, abstraction, héritage, polymorphisme et interfaces.
+- `Livre.dureePret()` retourne 21 jours.
+- `Periodique.dureePret()` retourne 7 jours.
 
-## 2. Architecture du projet
+## 3. Choix de composition : `Livre` et `Auteur`
 
-L'architecture repose sur une classe abstraite `Document`, qui constitue la classe mère des différents types de documents.
+Un livre possède un ou plusieurs auteurs. Cette relation est modélisée par composition : le constructeur de `Livre` reçoit les noms des auteurs et crée les objets `Auteur` qui constituent ses informations propres. Le modèle ne reçoit pas un tableau d'objets `Auteur` créé ailleurs.
 
-### Organisation des classes et interfaces
+Le tableau `Auteur[]` est utilisé volontairement pour représenter les auteurs à ce jalon. `getAuteurs()` renvoie une copie du tableau afin d'éviter qu'un appelant puisse remplacer directement les éléments du tableau interne. La classe `Auteur` est immuable : son nom est `final` et aucun mutateur n'est fourni.
 
-* **Empruntable** : interface définissant les opérations liées à l'emprunt, au retour et au suivi de l'état d'un document.
-* **Pretable** : interface qui étend `Empruntable`.
-* **Document** : classe abstraite implémentant `Pretable` et `Cloneable`. Elle centralise les informations communes aux documents ainsi que la gestion des emprunts.
-* **Livre** : classe fille de `Document`, qui ajoute le nombre de pages et définit une durée maximale de prêt de 21 jours.
-* **Periodique** : classe fille de `Document`, qui ajoute le numéro de parution et définit une durée maximale de prêt de 7 jours.
-* **Utilisateur** : classe représentant les personnes pouvant emprunter des documents.
-* **Main** : classe permettant de lancer et de présenter le fonctionnement de l'application.
-* **Tests** : classe regroupant les vérifications du fonctionnement des différentes fonctionnalités.
+Cette solution n'introduit pas `ArrayList`, `HashSet`, `Map` ou d'autres collections du framework Java ; leur étude est laissée au jalon consacré aux interfaces et collections.
 
-## 3. Principes de programmation orientée objet utilisés
+Un périodique n'est pas composé d'auteurs de livre dans ce modèle : il possède un `organisme` de rédaction et un `numeroParution`, qui sont ses informations éditoriales propres.
 
-### Encapsulation
+## 4. Polymorphisme sans test de type dans le client
 
-Les attributs des classes sont privés afin de protéger les données. L'accès aux informations se fait principalement à travers des méthodes dédiées.
+`Livre` et `Periodique` redéfinissent toutes les deux `dureePret()` et `toString()`. Le client peut manipuler les objets au moyen de références `Document` : la méthode correspondant au type réel de l'objet est appelée automatiquement.
 
-### Abstraction
+Exemple présent dans `Main.java` :
 
-La classe `Document` est abstraite, car elle représente une notion générale qui ne doit pas être instanciée directement. Elle impose notamment aux classes filles de définir leur propre durée maximale de prêt.
+```java
+Document[] documents = {
+    new Livre(1, "Maimouna", 200, "Abdoulaye Sadji"),
+    new Periodique(2, "Journal scientifique", "Redaction 2iE", 5)
+};
 
-### Héritage
+for (Document document : documents) {
+    System.out.println(document);
+    System.out.println(document.dureePret());
+}
+```
 
-Les classes `Livre` et `Periodique` héritent de `Document`. Elles réutilisent ainsi les attributs et les comportements communs tout en ajoutant leurs caractéristiques spécifiques.
+Le client ne contient aucun `instanceof` ni branchement `if` pour distinguer les sous-types.
 
-### Polymorphisme
+## 5. Principe de substitution et contrats
 
-Les documents peuvent être manipulés à travers des références de type `Document`. Les méthodes redéfinies, notamment `dureeMaxPret()` et `toString()`, sont exécutées selon le type réel de l'objet.
+Une référence `Document` peut désigner un `Livre` ou un `Periodique`. Les sous-types conservent le contrat d'emprunt et de retour défini par `Document` ; ils ne renforcent pas les préconditions et ne diminuent pas les garanties.
 
-### Interfaces
+**Préconditions de l'emprunt :** le document doit être disponible et l'utilisateur doit être non nul. Si ces conditions ne sont pas satisfaites, la méthode renvoie `false` et ne modifie pas l'état.
 
-L'interface `Empruntable` définit les opérations nécessaires à la gestion des emprunts. L'interface `Pretable` étend ce contrat et est implémentée par `Document`.
+**Postconditions d'un emprunt réussi :** la méthode renvoie `true`, le document devient indisponible et l'utilisateur est enregistré comme emprunteur.
 
-## 4. Gestion des emprunts et invariants
+**Postconditions d'un retour réussi :** la méthode renvoie `true`, le document redevient disponible et l'emprunteur est remis à `null`.
 
-Le fonctionnement du système repose sur plusieurs règles :
+Les deux essais obligatoires de substitution sont dans `Tests.java` : un `Livre` puis un `Periodique` sont manipulés au moyen d'une référence de type `Document`.
 
-* Le numéro d'un document doit être strictement positif.
-* Le titre et l'auteur d'un document ne doivent être ni nuls ni vides.
-* Le nombre de pages d'un livre doit être strictement positif.
-* Le numéro de parution d'un périodique doit être strictement positif.
-* L'identifiant d'un utilisateur doit être strictement positif.
-* Le nom d'un utilisateur ne doit pas être vide.
-* L'adresse électronique d'un utilisateur doit respecter le format attendu.
-* Un document disponible peut être emprunté par un utilisateur valide.
-* Un document déjà emprunté ne peut pas faire l'objet d'un nouvel emprunt.
-* Lorsqu'un document est retourné, il redevient disponible et son emprunteur est réinitialisé.
+## 6. Invariants du modèle
 
-Les opérations d'emprunt et de retour renvoient un booléen permettant de connaître leur résultat.
+- Le numéro d'un document est strictement positif.
+- Le titre d'un document n'est ni `null` ni vide.
+- Le nombre de pages d'un livre est strictement positif.
+- Un livre possède au moins un auteur ; le nom de chaque auteur n'est ni `null` ni vide.
+- L'organisme d'un périodique n'est ni `null` ni vide.
+- Le numéro de parution d'un périodique est strictement positif.
+- Un document disponible n'a pas d'emprunteur.
+- Un emprunt accepté rend le document indisponible et renseigne son emprunteur.
+- Un retour accepté rend le document disponible et efface son emprunteur.
 
-## 5. Durées maximales de prêt
+## 7. Classes du projet
 
-| Type de document | Durée maximale |
-| ---------------- | -------------: |
-| Livre            |       21 jours |
-| Périodique       |        7 jours |
+- `Document.java` : classe abstraite, état commun, emprunt/retour et méthode abstraite `dureePret()`.
+- `Livre.java` : sous-type de `Document`, nombre de pages, composition avec `Auteur`, redéfinitions.
+- `Periodique.java` : sous-type de `Document`, organisme, numéro de parution et redéfinitions.
+- `Auteur.java` : valeur représentant le nom d'un auteur.
+- `Utilisateur.java` : informations et validations de l'emprunteur.
+- `Empruntable.java` et `Pretable.java` : interfaces conservées du Jalon 1 ; leur présence n'est pas une nouvelle fonctionnalité du Jalon 2.
+- `Main.java` : exemple client illustrant le polymorphisme sans test de type.
+- `Tests.java` : 43 vérifications automatisées.
+- `ESSAIS_MANUELS.md` : 12 scénarios manuels cumulés à exécuter et à valider par le groupe.
+- `Diagramme_Jalon2.puml` : diagramme de classes PlantUML.
 
-Ces durées sont définies par redéfinition de la méthode `dureeMaxPret()` dans chaque classe fille.
+## 8. Compilation et exécution
 
-## 6. Tests et vérifications
-
-La classe `Tests.java` regroupe les vérifications portant notamment sur :
-
-* La structure des classes et des interfaces.
-* L'initialisation des objets.
-* Les validations des données.
-* Les durées maximales de prêt.
-* Les opérations d'emprunt et de retour.
-* Le refus d'un emprunt lorsque le document est indisponible.
-* La gestion de l'emprunteur.
-* Le comportement de la méthode `clone()`.
-
-**Résultat obtenu : 41 tests réussis sur 41.**
-
-## 7. Compilation et exécution
-
-Le projet nécessite un JDK Java installé.
-
-Depuis le répertoire contenant les fichiers `.java`, ouvrir un terminal et exécuter :
+Avec un JDK installé, ouvrir un terminal dans le dossier du projet puis exécuter :
 
 ```bash
 javac *.java
-```
-
-Pour lancer l'application :
-
-```bash
+java Tests
 java Main
 ```
 
-Pour exécuter les tests :
+La suite de tests actuelle doit afficher : `43 tests reussis sur 43`.
 
-```bash
-java Tests
-```
+Les essais manuels ne doivent être déclarés réalisés qu'après exécution par les membres du groupe et renseignement de la fiche `ESSAIS_MANUELS.md`.
 
-## 8. Diagramme UML
+## 9. Périmètre respecté
 
-Le diagramme de classes UML présente les classes, les interfaces, les relations d'héritage, d'implémentation et l'association entre les documents et les utilisateurs.
-
-Il est disponible dans le dossier `Diagramme` du projet.
-
-## 9. Organisation du dépôt
-
-```text
-bibliotheque/
-│
-├── Document.java
-├── Empruntable.java
-├── Pretable.java
-├── Livre.java
-├── Periodique.java
-├── Utilisateur.java
-├── Main.java
-├── Tests.java
-├── README.md
-│
-└── Diagramme/
-    ├── Diagramme_classes_Bibliotheque_Jalon1_final.puml
-    └── Diagramme_classes_Bibliotheque_Jalon1_final.png
-```
-
-## 10. Informations sur le projet
-
-* **Projet :** Bibliothèque de prêt
-* **Groupe :** 4
-* **Langage :** Java
-* **Version :** Jalon 1out en maintenant pleinement sa participation intellectuelle au projet.
-  
+Le projet se limite aux objectifs du Jalon 2 : composition, héritage, polymorphisme et substitution. Il ne met pas en place de gestionnaire de bibliothèque ni de collections Java du framework, afin de réserver ces notions au jalon ultérieur.

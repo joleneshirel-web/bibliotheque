@@ -1,0 +1,76 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+interface Empruntable {
+  +emprunter(utilisateur : Utilisateur) : boolean
+  +retourner() : boolean
+  +estEmprunte() : boolean
+  +dureePret() : int
+  +getEmprunteur() : Utilisateur
+}
+
+interface Pretable
+Pretable --|> Empruntable
+
+abstract class Document {
+  -numero : int
+  -titre : String
+  -disponible : boolean
+  -emprunteur : Utilisateur
+  #Document(numero : int, titre : String)
+  +emprunter(utilisateur : Utilisateur) : boolean
+  +retourner() : boolean
+  +estEmprunte() : boolean
+  {abstract} +dureePret() : int
+  +clone() : Document
+}
+
+class Livre {
+  -nombrePages : int
+  -auteurs : Auteur[]
+  +Livre(numero : int, titre : String, nombrePages : int, nomsAuteurs : String...)
+  +getAuteurs() : Auteur[]
+  +dureePret() : int
+  +toString() : String
+  +clone() : Livre
+}
+
+class Periodique {
+  -organisme : String
+  -numeroParution : int
+  +dureePret() : int
+  +toString() : String
+}
+
+class Auteur {
+  -nom : String
+  +getNom() : String
+  +toString() : String
+}
+
+class Utilisateur {
+  -id : int
+  -nom : String
+  -email : String
+}
+
+Document ..|> Pretable
+Livre --|> Document
+Periodique --|> Document
+Livre "1" *-- "1..*" Auteur : compose
+Document "0..*" --> "0..1" Utilisateur : emprunteur
+
+note right of Document
+  Les regles communes d'emprunt
+  et de retour sont centralisees ici.
+end note
+
+note right of Livre
+  dureePret() = 21 jours
+  Cree ses propres objets Auteur.
+end note
+
+note right of Periodique
+  dureePret() = 7 jours
+end note
+@enduml
