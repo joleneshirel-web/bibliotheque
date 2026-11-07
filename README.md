@@ -101,3 +101,7 @@ Les essais manuels ne doivent être déclarés réalisés qu'après exécution p
 ## 9. Périmètre respecté
 
 Le projet se limite aux objectifs du Jalon 2 : composition, héritage, polymorphisme et substitution. Il ne met pas en place de gestionnaire de bibliothèque ni de collections Java du framework, afin de réserver ces notions au jalon ultérieur.
+
+## Diagramme de classes – Jalon 2
+
+![Diagramme de classes du Jalon 2](Diagramme_Jalon2.png)
