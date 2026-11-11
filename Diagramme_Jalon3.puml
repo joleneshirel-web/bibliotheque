@@ -1,0 +1,79 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam monochrome true
+skinparam packageStyle rectangle
+
+interface CatalogueDocuments {
+  +ajouter(document : Document) : boolean
+  +rechercherParNumero(numero : int) : Optional<Document>
+  +parcourir() : List<Document>
+}
+
+class CatalogueDocumentsMemoire {
+  -documents : Map<Integer, Document>
+  +ajouter(document : Document) : boolean
+  +rechercherParNumero(numero : int) : Optional<Document>
+  +parcourir() : List<Document>
+}
+
+interface Empruntable {
+  +emprunter(utilisateur : Utilisateur) : boolean
+  +retourner() : boolean
+  +estEmprunte() : boolean
+  +dureePret() : int
+  +getEmprunteur() : Utilisateur
+}
+interface Pretable
+Pretable --|> Empruntable
+
+abstract class Document {
+  -numero : int
+  -titre : String
+  -disponible : boolean
+  -emprunteur : Utilisateur
+  +equals(objet : Object) : boolean
+  +hashCode() : int
+  {abstract} +dureePret() : int
+}
+
+class Livre {
+  -nombrePages : int
+  -auteurs : Auteur[]
+  +dureePret() : int
+  +toString() : String
+}
+class Periodique {
+  -organisme : String
+  -numeroParution : int
+  +dureePret() : int
+  +toString() : String
+}
+class Auteur {
+  -nom : String
+}
+class Utilisateur {
+  -id : int
+  -nom : String
+  -email : String
+}
+
+CatalogueDocumentsMemoire ..|> CatalogueDocuments
+CatalogueDocumentsMemoire --> "0..*" Document : catalogue
+Document ..|> Pretable
+Livre --|> Document
+Periodique --|> Document
+Livre "1" *-- "1..*" Auteur : composition
+Document "0..*" --> "0..1" Utilisateur : emprunteur
+
+note right of CatalogueDocumentsMemoire
+  Implémentation en mémoire :
+  HashMap<Integer, Document>
+  clé = numéro immuable du document
+end note
+
+note bottom of CatalogueDocuments
+  Le client dépend de l'interface,
+  pas de l'implémentation concrète.
+end note
+@enduml

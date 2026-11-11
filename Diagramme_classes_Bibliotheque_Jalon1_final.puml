@@ -1,0 +1,82 @@
+@startuml
+title Projet Bibliothèque de prêt — Jalon 1 (version finale)
+skinparam classAttributeIconSize 0
+hide empty members
+
+interface Empruntable {
+  +emprunter(utilisateur : Utilisateur) : boolean
+  +retourner() : boolean
+  +estEmprunte() : boolean
+  +dureeMaxPret() : int
+  +getEmprunteur() : Utilisateur
+}
+
+interface Pretable {
+}
+
+abstract class Document {
+  -numero : int {readOnly}
+  -titre : String {readOnly}
+  -auteur : String {readOnly}
+  -disponible : boolean
+  -emprunteur : Utilisateur
+  --
+  +Document(numero : int, titre : String, auteur : String)
+  +getNumero() : int
+  +getTitre() : String
+  +getAuteur() : String
+  +isDisponible() : boolean
+  +getEmprunteur() : Utilisateur
+  +emprunter(utilisateur : Utilisateur) : boolean
+  +retourner() : boolean
+  +estEmprunte() : boolean
+  {abstract} +dureeMaxPret() : int
+  +clone() : Document
+  +toString() : String
+}
+
+class Livre {
+  -nombrePages : int {readOnly}
+  --
+  +Livre(numero : int, titre : String, auteur : String, nombrePages : int)
+  +getNombrePages() : int
+  +dureeMaxPret() : int
+  +toString() : String
+}
+
+class Periodique {
+  -numeroParution : int {readOnly}
+  --
+  +Periodique(numero : int, titre : String, auteur : String, numeroParution : int)
+  +getNumeroParution() : int
+  +dureeMaxPret() : int
+  +toString() : String
+}
+
+class Utilisateur {
+  -id : int {readOnly}
+  -nom : String {readOnly}
+  -email : String {readOnly}
+  --
+  +Utilisateur(id : int, nom : String, email : String)
+  +getId() : int
+  +getNom() : String
+  +getEmail() : String
+  +afficherInformations() : void
+  +toString() : String
+}
+
+Pretable --|> Empruntable : étend
+Document ..|> Pretable : implémente
+Document ..|> Cloneable : implémente
+Livre --|> Document : hérite
+Periodique --|> Document : hérite
+Document "0..*" --> "0..1" Utilisateur : emprunteur
+
+note right of Livre
+  Durée maximale : 21 jours
+end note
+note right of Periodique
+  Durée maximale : 7 jours
+end note
+@enduml
