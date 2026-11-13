@@ -1,108 +1,184 @@
-# Bibliothèque de prêt — Jalon 3 : Interfaces et collections
+BIBLIOTHÈQUE DE PRÊT
 
-Groupe 4 — Projet Java de programmation orientée objet.
+JALON 3 : INTERFACES ET COLLECTIONS
 
-## 1. Objectif du jalon
+Groupe 4 — Projet Java de programmation orientée objet
 
-Le Jalon 3 ajoute uniquement les éléments demandés dans le sujet :
-- le contrat `CatalogueDocuments` ;
-- une implémentation du catalogue en mémoire avec une collection adaptée ;
-- l'ajout, la recherche par numéro et le parcours des documents ;
-- l'encapsulation de la collection interne ;
-- `equals()` et `hashCode()` dans `Document` ;
-- les essais cumulés des jalons précédents et du Jalon 3.
+1. Objectif du jalon
 
-`ServicePret` n'est pas introduit : il est prévu au Jalon 4.
+Dans ce troisième jalon de notre projet de bibliothèque de prêt, nous avons travaillé sur les interfaces et les collections en Java.
 
-## 2. Comparaison des collections
+Notre objectif était de mettre en place un catalogue permettant de stocker les documents, de les ajouter, de les rechercher à partir de leur numéro et de parcourir l'ensemble des documents enregistrés.
 
-| Structure | Unicité | Ordre | Recherche par numéro |
-|---|---|---|---|
-| `List` | N'accepte pas automatiquement les identifiants uniques | Conserve l'ordre | Parcours généralement nécessaire : O(n) |
-| `Set` | Unicité selon `equals()` et `hashCode()` | Dépend de l'implémentation | Pas d'accès direct par numéro |
-| `Map` | Les clés sont uniques | Dépend de l'implémentation | Accès direct à partir de la clé |
+Pour réaliser ce travail, nous avons ajouté les éléments suivants :
 
-Le catalogue utilise une `HashMap<Integer, Document>`. Le numéro immuable du document sert de clé. Ce choix répond directement au besoin d'identification unique et de recherche par numéro. L'ordre de parcours n'est pas garanti par `HashMap` et le projet ne dépend pas d'un ordre particulier.
+- L'interface "CatalogueDocuments" ;
+- La classe "CatalogueDocumentsMemoire", qui représente notre implémentation du catalogue en mémoire ;
+- Les méthodes permettant d'ajouter, de rechercher et de parcourir les documents ;
+- Les méthodes "equals()" et "hashCode()" dans la classe "Document" ;
+- Les tests permettant de vérifier le bon fonctionnement de l'ensemble.
 
-## 3. Contrat `CatalogueDocuments`
+Nous avons également conservé les fonctionnalités et les tests réalisés pendant les jalons précédents.
 
-L'interface expose seulement les opérations nécessaires au jalon :
-- `ajouter(Document document)` : ajoute le document et renvoie `false` si le numéro existe déjà ;
-- `rechercherParNumero(int numero)` : renvoie un `Optional<Document>`, vide si le numéro est absent ;
-- `parcourir()` : renvoie les documents pour permettre leur parcours.
+À noter que nous n'avons pas encore introduit la classe "ServicePret", car celle-ci est prévue pour le Jalon 4.
 
-Le client utilise le type `CatalogueDocuments`, et non la classe concrète `CatalogueDocumentsMemoire`. L'interface isole donc le code client du choix de l'implémentation.
+2. Choix de la collection utilisée
 
-## 4. Encapsulation et invariants du catalogue
+Avant de choisir la collection à utiliser pour notre catalogue, nous avons étudié les principales collections disponibles en Java : "List", "Set" et "Map".
 
-La collection est stockée dans l'attribut privé `documents`. Elle n'est jamais retournée directement.
+Voici une comparaison de leurs caractéristiques :
 
-`parcourir()` construit une copie des valeurs puis renvoie une liste non modifiable. Modifier cette liste ne permet donc pas de modifier la collection interne.
+Collection| Fonctionnement
+"List"| Permet de stocker plusieurs éléments et conserve leur ordre d'insertion. Les doublons sont autorisés.
+"Set"| Évite les doublons en se basant sur "equals()" et "hashCode()".
+"Map"| Stocke les éléments sous forme de paires clé-valeur. Chaque clé doit être unique.
 
-- Un document `null` ne peut pas être ajouté.
-- Un numéro déjà présent ne peut pas être ajouté une deuxième fois.
-- Un numéro de recherche doit être strictement positif.
-- Une recherche sans résultat renvoie `Optional.empty()`.
+Après cette comparaison, nous avons choisi d'utiliser une "HashMap<Integer, Document>" pour notre catalogue.
 
-Aucune opération de suppression ou de gestion des prêts n'est ajoutée à ce catalogue : elles ne font pas partie des opérations demandées dans le périmètre du Jalon 3.
+Ce choix s'explique par le fait que chaque document possède un numéro unique. Nous avons donc utilisé ce numéro comme clé et le document correspondant comme valeur.
 
-## 5. `equals()` et `hashCode()`
+Cela nous permet de retrouver directement un document à partir de son numéro, sans devoir parcourir toute la collection.
 
-Dans `Document`, deux documents sont égaux lorsqu'ils possèdent le même numéro. Le numéro est un identifiant positif et immuable ; l'égalité ne dépend donc ni du titre, ni du type concret, ni de la disponibilité.
+Nous avons également retenu cette solution parce qu'elle permet d'ajouter des documents tout en évitant les doublons de numéros.
 
-`hashCode()` utilise ce même numéro. Deux documents égaux ont ainsi le même code de hachage, et celui-ci reste stable pendant la vie de l'objet. Les deux méthodes sont `final` afin que les sous-types ne puissent pas modifier cette règle.
+La "HashMap" ne garantit pas un ordre particulier lors du parcours, mais cela ne pose pas de problème pour notre projet, puisque l'ordre des documents n'est pas une exigence du jalon.
 
-Ces méthodes sont définies et vérifiées avant l'utilisation de la collection de hachage du catalogue.
+3. Mise en place de l'interface "CatalogueDocuments"
 
-## 6. Complexité des opérations principales
+Nous avons créé une interface appelée "CatalogueDocuments" afin de définir les opérations que notre catalogue doit obligatoirement proposer.
 
-Pour `HashMap`, les coûts usuels moyens sont :
-- ajout par numéro : O(1) en moyenne ;
-- recherche par numéro : O(1) en moyenne ;
-- parcours de tous les documents : O(n).
+Cette interface contient trois méthodes principales :
 
-Ces complexités sont moyennes ; en cas de collisions défavorables, une opération individuelle peut coûter davantage.
+- "ajouter(Document document)" : permet d'ajouter un document au catalogue. La méthode renvoie "false" si un document portant déjà le même numéro existe.
+- "rechercherParNumero(int numero)" : permet de rechercher un document à partir de son numéro. Elle renvoie un "Optional<Document>" pour représenter aussi bien un résultat trouvé qu'une absence de résultat.
+- "parcourir()" : permet de récupérer les documents du catalogue afin de pouvoir les parcourir.
 
-## 7. Diagramme de classes
+Nous avons choisi de faire passer les opérations par une interface plutôt que de dépendre directement de notre classe d'implémentation.
 
-Les deux fichiers du diagramme sont fournis :
-- `Diagramme_Jalon3.puml` : source PlantUML ;
-- `Diagramme_Jalon3.png` : image du diagramme de classes.
+Ainsi, le reste du programme peut utiliser le type "CatalogueDocuments" sans avoir besoin de connaître les détails de fonctionnement de "CatalogueDocumentsMemoire".
 
-Le diagramme représente l'interface du catalogue, son implémentation mémoire et les relations avec le modèle issu des jalons précédents.
+4. Implémentation et encapsulation du catalogue
 
-## 8. Essais
+Nous avons ensuite créé la classe "CatalogueDocumentsMemoire", qui implémente l'interface "CatalogueDocuments".
 
-`Tests.java` conserve les vérifications automatisées du Jalon 2 et ajoute les vérifications du Jalon 3. Les essais ajoutés vérifient :
-- l'égalité de deux documents portant le même numéro ;
-- la cohérence et la stabilité de `hashCode()` ;
-- l'ajout et le refus des doublons ;
-- la recherche d'un document présent et d'un numéro absent ;
-- le parcours sans exposition de la collection interne ;
-- le refus des données invalides.
+Dans cette classe, nous avons utilisé une "HashMap<Integer, Document>" pour stocker les documents.
 
-La suite contient **58 vérifications automatisées cumulées**. Le sujet demande au minimum douze essais cumulés ; ce seuil est donc dépassé.
+Nous avons déclaré cette collection avec l'attribut "private", afin qu'elle ne puisse pas être modifiée directement depuis les autres classes.
 
-`ESSAIS_MANUELS.md` fournit également les manipulations à exécuter et à valider par le groupe. Les résultats manuels doivent être renseignés après exécution réelle.
+Nous avons également pris plusieurs précautions pour protéger les données du catalogue :
 
-## 9. Compilation et exécution
+- Nous refusons l'ajout d'un document dont la valeur est "null".
+- Nous empêchons l'ajout de deux documents possédant le même numéro.
+- Nous vérifions que le numéro fourni lors d'une recherche est strictement positif.
+- Lorsqu'un document n'est pas trouvé, nous renvoyons "Optional.empty()".
 
-Depuis le dossier contenant les fichiers Java :
+Pour la méthode "parcourir()", nous avons choisi de ne pas retourner directement notre collection interne.
 
-```bash
+À la place, nous créons une copie des documents sous forme de liste, puis nous rendons cette liste non modifiable.
+
+Cette solution permet de parcourir les documents sans donner au code extérieur la possibilité de modifier directement le contenu du catalogue.
+
+Enfin, nous n'avons pas ajouté de méthode de suppression ou de gestion des prêts, car ces fonctionnalités ne sont pas demandées dans le cadre du Jalon 3.
+
+5. Redéfinition de "equals()" et "hashCode()"
+
+Dans ce jalon, nous avons également travaillé sur les méthodes "equals()" et "hashCode()" de la classe "Document".
+
+Nous avons décidé que deux documents sont considérés comme égaux lorsqu'ils possèdent le même numéro, même si leurs titres ou leurs types sont différents.
+
+Ce choix est logique, car le numéro représente l'identifiant unique de chaque document dans notre bibliothèque.
+
+Nous avons donc redéfini les deux méthodes en utilisant uniquement ce numéro.
+
+La méthode "equals()" permet de vérifier si deux documents possèdent le même identifiant, tandis que "hashCode()" calcule leur code de hachage à partir de ce même identifiant.
+
+Nous avons également déclaré ces méthodes "final" afin que les classes qui héritent de "Document" ne puissent pas modifier cette règle d'égalité.
+
+Cela permet de garantir la cohérence du fonctionnement de notre catalogue, notamment avec l'utilisation des collections basées sur le hachage.
+
+6. Complexité des opérations
+
+Nous avons aussi étudié la complexité des principales opérations de notre catalogue.
+
+Avec l'utilisation de "HashMap", nous obtenons les performances moyennes suivantes :
+
+Opération| Complexité moyenne
+Ajout d'un document| O(1)
+Recherche par numéro| O(1)
+Parcours des documents| O(n)
+
+Cela signifie que l'ajout et la recherche sont généralement rapides, même lorsque le nombre de documents augmente.
+
+Le parcours nécessite quant à lui de visiter les différents documents enregistrés, ce qui explique sa complexité en O(n).
+
+Ces performances sont des moyennes et peuvent varier notamment en cas de collisions dans la table de hachage.
+
+7. Diagramme de classes
+
+Pour représenter l'organisation de notre code et les relations entre les différentes classes, nous avons réalisé un diagramme de classes avec PlantUML.
+
+Nous avons fourni deux fichiers :
+
+- "Diagramme_Jalon3.puml" : le fichier source permettant de modifier et de générer le diagramme ;
+- "Diagramme_Jalon3.png" : l'image du diagramme de classes.
+
+Ce diagramme présente notamment l'interface "CatalogueDocuments", son implémentation "CatalogueDocumentsMemoire" ainsi que les relations avec les classes du modèle développées pendant les jalons précédents.
+
+Il nous permet d'avoir une meilleure vue d'ensemble de l'organisation de notre projet.
+
+8. Tests et vérifications
+
+Pour vérifier que notre travail fonctionne correctement, nous avons complété le fichier "Tests.java".
+
+Nous avons conservé les tests des jalons précédents et ajouté de nouveaux tests pour vérifier les fonctionnalités du Jalon 3.
+
+Nos nouveaux tests portent notamment sur :
+
+- L'égalité entre deux documents ayant le même numéro ;
+- La cohérence de "hashCode()" ;
+- La stabilité du code de hachage ;
+- L'ajout correct des documents ;
+- Le refus des documents ayant un numéro déjà utilisé ;
+- La recherche d'un document existant ;
+- La recherche d'un numéro inexistant ;
+- Le parcours des documents ;
+- La protection de la collection interne ;
+- Le refus des données invalides.
+
+Au total, notre fichier "Tests.java" contient 58 vérifications automatisées cumulées, en prenant en compte les jalons précédents et le Jalon 3.
+
+Ce nombre dépasse le minimum de douze tests cumulés demandé dans le sujet.
+
+Nous avons également préparé un fichier "ESSAIS_MANUELS.md", qui présente les manipulations à effectuer pour compléter les vérifications automatisées.
+
+Les résultats de ces essais manuels devront être renseignés après leur exécution effective par les membres du groupe.
+
+9. Compilation et exécution du projet
+
+Pour compiler et exécuter notre projet, nous avons utilisé les commandes suivantes dans le terminal, depuis le dossier contenant les fichiers Java.
+
+Premièrement, nous compilons les classes avec :
+
 javac *.java
+
+Ensuite, nous exécutons les tests avec :
+
 java Tests
+
+Enfin, pour lancer le programme principal, nous utilisons :
+
 java Main
-```
 
-Aucune bibliothèque externe n'est nécessaire.
+Notre projet ne nécessite aucune bibliothèque externe. Il peut donc être compilé et exécuté directement avec le JDK.
 
-## 10. Limites volontaires du jalon
+10. Conclusion
 
-Ce projet n'introduit pas :
-- `ServicePret` ;
-- les exceptions métier dédiées ;
-- les tests JUnit ;
-- une base de données, un réseau ou une interface graphique.
+À travers ce troisième jalon, nous avons pu approfondir notre compréhension des interfaces et des collections en Java.
 
-Ces éléments ne sont pas demandés au Jalon 3. Les exceptions métier, l'atomicité des opérations de prêt et JUnit seront traités au Jalon 4.
+Nous avons appris à utiliser une "HashMap" pour organiser les documents de notre bibliothèque et faciliter leur recherche à partir d'un identifiant unique.
+
+Nous avons également travaillé sur l'encapsulation afin de protéger les données internes de notre catalogue, ainsi que sur les méthodes "equals()" et "hashCode()" pour définir correctement l'égalité entre les documents.
+
+Enfin, nous avons renforcé nos vérifications avec de nouveaux tests tout en conservant ceux des jalons précédents.
+
+Ce travail nous permet de disposer d'une base mieux organisée et plus fiable pour poursuivre le développement de notre projet lors du prochain jalon.
