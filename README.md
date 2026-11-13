@@ -1,93 +1,208 @@
-Projet POO – Bibliothèque de prêt
+Bibliothèque de prêt — Jalon 3 : Interfaces et collections
 
-Présentation du projet
+Groupe 4 – Projet Java de programmation orientée objet.
 
-Dans le cadre de notre projet de programmation orientée objet (POO), nous avons réalisé une application de gestion d'une bibliothèque de prêt en Java.
+---
 
-L'objectif est de pouvoir gérer différents types de documents, notamment les livres et les périodiques, ainsi que de consulter les documents disponibles dans notre catalogue.
+1. Objectif du jalon
 
-Le projet est développé en Java et fonctionne en mode console. Les données sont conservées en mémoire pendant l'exécution du programme.
+Le Jalon 3 ajoute les éléments demandés dans le sujet :
 
-Organisation du projet
+- le contrat "CatalogueDocuments" ;
+- une implémentation du catalogue en mémoire avec une collection adaptée ;
+- l'ajout, la recherche par numéro et le parcours des documents ;
+- l'encapsulation de la collection interne ;
+- les méthodes "equals()" et "hashCode()" dans "Document" ;
+- les essais cumulés des jalons précédents et du Jalon 3.
 
-Notre projet est composé de plusieurs classes qui permettent de répartir les différentes responsabilités :
+"ServicePret" n'est pas introduit : il est prévu au Jalon 4.
 
-- Document : classe abstraite qui représente les informations communes aux documents.
-- Livre : représente un livre avec son nombre de pages et ses auteurs.
-- Periodique : représente un périodique avec son organisme de rédaction et son numéro de parution.
-- Auteur : représente l'auteur d'un livre.
-- Utilisateur : représente un adhérent de la bibliothèque.
-- Pretable : interface qui définit les opérations liées au prêt.
-- CatalogueDocuments : interface qui définit les opérations accessibles sur le catalogue.
-- CatalogueDocumentsMemoire : classe qui implémente le catalogue en utilisant une "HashMap".
+---
 
-Travail réalisé – Jalon 3
+2. Comparaison des collections
 
-Pour ce troisième jalon, nous avons travaillé sur les interfaces et les collections Java.
+Dans ce jalon, nous avons étudié trois structures principales du framework Java : "List", "Set" et "Map".
 
-Nous avons créé l'interface "CatalogueDocuments" afin de séparer le fonctionnement du catalogue de son implémentation. Cela permet d'utiliser le catalogue sans dépendre directement de la structure de données choisie.
+Structure| Unicité| Ordre| Recherche par numéro
+"List"| N'accepte pas automatiquement les identifiants uniques| Conserve l'ordre d'insertion| Parcours généralement nécessaire : O(n)
+"Set"| Unicité selon "equals()" et "hashCode()"| Dépend de l'implémentation| Pas d'accès direct par numéro
+"Map"| Les clés sont uniques| Dépend de l'implémentation| Accès direct à partir de la clé
 
-Nous avons ensuite créé la classe "CatalogueDocumentsMemoire", qui utilise une "HashMap" pour stocker les documents. Chaque document est associé à son numéro, ce qui permet de le retrouver facilement.
+Le catalogue utilise une "HashMap<Integer, Document>". Le numéro immuable du document sert de clé. Ce choix répond directement au besoin d'identification unique et de recherche par numéro.
 
-Le catalogue permet :
+L'ordre de parcours n'est pas garanti par "HashMap" et notre projet ne dépend pas d'un ordre particulier.
 
-- d'ajouter un document ;
-- de refuser l'ajout d'un document dont le numéro existe déjà ;
-- de rechercher un document à partir de son numéro ;
-- de parcourir les documents sans donner accès directement à la collection interne.
+---
 
-Nous avons également défini les méthodes "equals()" et "hashCode()" dans la classe "Document". Elles permettent de considérer deux documents comme égaux lorsqu'ils possèdent le même numéro.
+3. Contrat "CatalogueDocuments"
 
-Choix des collections
+Nous avons créé l'interface "CatalogueDocuments" afin de définir les opérations nécessaires au fonctionnement du catalogue, sans imposer la structure de données utilisée pour les réaliser.
 
-Nous avons étudié trois collections Java :
+L'interface expose trois méthodes :
 
-- List : permet de conserver plusieurs éléments dans un ordre précis et d'accepter les doublons.
-- Set : permet de stocker des éléments sans doublons.
-- Map : permet d'associer une clé à une valeur.
+- "ajouter(Document document)" : ajoute un document et renvoie "false" si son numéro existe déjà.
+- "rechercherParNumero(int numero)" : renvoie un "Optional<Document>", vide si aucun document ne correspond au numéro recherché.
+- "parcourir()" : renvoie une liste des documents du catalogue sans donner directement accès à la collection interne.
 
-Pour notre catalogue, nous avons choisi une "HashMap<Integer, Document>". La clé correspond au numéro du document et la valeur correspond au document lui-même.
+Ce choix permet de séparer le contrat de son implémentation. Le programme peut ainsi utiliser le catalogue à travers l'interface "CatalogueDocuments", sans dépendre directement de la classe "CatalogueDocumentsMemoire".
 
-Ce choix facilite la recherche par numéro et permet de vérifier rapidement si un numéro est déjà utilisé.
+---
 
-Complexité des opérations
+4. Implémentation "CatalogueDocumentsMemoire"
 
-Avec notre utilisation de "HashMap", les principales opérations ont les complexités moyennes suivantes :
+La classe "CatalogueDocumentsMemoire" implémente l'interface "CatalogueDocuments".
+
+Nous avons choisi une "HashMap<Integer, Document>" pour stocker les documents en mémoire.
+
+La clé correspond au numéro du document et la valeur correspond à l'objet "Document" associé.
+
+4.1. Ajout d'un document
+
+La méthode "ajouter()" vérifie d'abord que le document reçu n'est pas "null".
+
+Elle récupère ensuite son numéro et vérifie si celui-ci est déjà présent dans la "HashMap".
+
+- Si le numéro existe déjà, la méthode renvoie "false".
+- Sinon, le document est ajouté et la méthode renvoie "true".
+
+Cette vérification permet d'éviter d'enregistrer deux documents portant le même numéro.
+
+4.2. Recherche par numéro
+
+La méthode "rechercherParNumero()" vérifie que le numéro fourni est strictement positif.
+
+Elle utilise ensuite la méthode "get()" de la "HashMap" pour retrouver le document correspondant.
+
+Le résultat est retourné sous forme d'un "Optional<Document>". Cela permet de représenter clairement le cas où aucun document n'est trouvé, sans retourner directement une valeur "null".
+
+4.3. Parcours des documents
+
+La méthode "parcourir()" permet de consulter les documents enregistrés dans le catalogue.
+
+Elle construit une nouvelle "ArrayList" à partir des valeurs de la "HashMap", puis applique "Collections.unmodifiableList()".
+
+La liste retournée ne peut donc pas être modifiée par l'appelant. La collection interne du catalogue reste privée et protégée.
+
+---
+
+5. Gestion de l'égalité : "equals()" et "hashCode()"
+
+Dans la classe abstraite "Document", nous avons redéfini les méthodes "equals()" et "hashCode()".
+
+Nous avons choisi de considérer que deux documents sont égaux lorsqu'ils possèdent le même numéro.
+
+La méthode "equals()" compare donc les numéros des deux documents. La méthode "hashCode()" calcule le code de hachage à partir de ce même numéro.
+
+Le numéro étant déclaré "final", il ne peut pas être modifié après la création du document.
+
+Les deux méthodes respectent ainsi la règle suivante : deux objets considérés comme égaux doivent posséder le même code de hachage.
+
+Nous avons également déclaré ces méthodes "final" afin que les sous-classes "Livre" et "Periodique" conservent la même règle d'égalité.
+
+Cette règle permet d'identifier les documents indépendamment de leur type concret.
+
+---
+
+6. Encapsulation de la collection interne
+
+Nous avons déclaré la "HashMap" comme attribut "private final" dans "CatalogueDocumentsMemoire".
+
+Ce choix empêche les autres classes d'accéder directement à la collection utilisée pour stocker les documents.
+
+La méthode "parcourir()" ne retourne pas la "HashMap" elle-même. Elle retourne une copie de ses valeurs sous forme de liste non modifiable.
+
+Cela permet aux autres parties du programme de consulter les documents sans pouvoir modifier directement la structure interne du catalogue.
+
+L'encapsulation garantit ainsi que les opérations d'ajout et de recherche restent contrôlées par les méthodes prévues dans l'interface.
+
+---
+
+7. Complexité des principales opérations
+
+Avec notre choix d'une "HashMap", les principales opérations possèdent les complexités moyennes suivantes :
 
 Opération| Complexité moyenne
-Recherche par numéro| O(1)
-Ajout d'un document| O(1)
-Vérification d'un numéro existant| O(1)
-Parcours du catalogue| O(n)
+Vérification d'un numéro avec "containsKey()"| O(1)
+Ajout avec "put()"| O(1)
+Recherche avec "get()"| O(1)
+Parcours de tous les documents| O(n)
 
-Ces complexités sont des moyennes : dans certains cas, les opérations sur une "HashMap" peuvent être plus coûteuses.
+Les opérations de recherche, de vérification et d'ajout ont une complexité moyenne en O(1), car la "HashMap" utilise le hachage pour accéder aux éléments à partir de leur clé.
 
-Tests
+Le parcours possède une complexité en O(n), car il faut examiner l'ensemble des documents enregistrés.
 
-Nous avons réalisé des essais manuels pour vérifier le fonctionnement des différentes parties du projet.
+Ces complexités sont des moyennes et peuvent varier selon les collisions et le fonctionnement interne de la "HashMap".
 
-Les tests du Jalon 3 portent notamment sur :
+---
 
-- l'égalité entre deux documents ayant le même numéro ;
+8. Essais et vérifications
+
+Nous avons conservé les essais réalisés lors des jalons précédents et ajouté les vérifications nécessaires pour le Jalon 3.
+
+Les vérifications portent notamment sur :
+
+- l'égalité de deux documents ayant le même numéro ;
 - la cohérence entre "equals()" et "hashCode()" ;
-- l'ajout d'un document dans le catalogue ;
-- le refus des doublons ;
-- la recherche d'un document existant ou inexistant ;
-- le refus des valeurs invalides ;
-- le parcours du catalogue et la protection de sa collection interne.
+- l'ajout d'un document au catalogue ;
+- le refus d'un document dont le numéro existe déjà ;
+- la recherche d'un document existant ;
+- la recherche d'un document inexistant ;
+- le refus d'un numéro invalide ;
+- le refus de l'ajout d'un document "null" ;
+- le parcours des documents ;
+- la protection de la liste retournée.
 
-Exécution du projet
+Ces essais permettent de vérifier que les nouvelles fonctionnalités fonctionnent conformément aux règles définies dans notre projet.
 
-Le projet peut être compilé et exécuté depuis un terminal avec les commandes suivantes :
+Les résultats des essais manuels sont présentés dans le fichier "ESSAIS_MANUELS.md" et dans la classe de tests du projet.
+
+---
+
+9. Diagramme de classes
+
+Le diagramme de classes du Jalon 3 présente l'organisation du projet après l'ajout du catalogue.
+
+Il représente notamment :
+
+- l'interface "CatalogueDocuments" ;
+- la classe "CatalogueDocumentsMemoire" qui implémente cette interface ;
+- l'utilisation de "Document" dans le catalogue ;
+- la hiérarchie entre "Document", "Livre" et "Periodique" ;
+- les autres relations déjà présentes dans le projet.
+
+Le diagramme est fourni sous deux formats :
+
+- "Diagramme_Jalon3.puml" : fichier source PlantUML ;
+- "Diagramme_Jalon3.png" : représentation du diagramme sous forme d'image.
+
+---
+
+10. Exécution du projet
+
+Le projet peut être compilé et exécuté depuis un terminal à partir du dossier contenant les fichiers Java.
+
+Compilation :
 
 javac *.java
+
+Exécution du programme principal :
+
 java Main
 
-Les essais peuvent être lancés avec la classe de tests correspondante.
+Pour lancer les essais, il faut exécuter la classe de tests correspondante.
+
+---
 
 Conclusion
 
-Ce troisième jalon nous a permis de mieux comprendre l'utilisation des interfaces et des collections en Java. Nous avons appris à séparer le contrat d'une classe de son implémentation et à choisir une structure de données adaptée aux besoins de notre application.
+Ce troisième jalon nous a permis de mieux comprendre l'utilisation des interfaces et des collections en Java.
 
-Notre projet évolue progressivement en respectant les objectifs fixés pour chaque jalon.
+Nous avons appris à séparer le contrat d'une fonctionnalité de son implémentation et à choisir une structure de données adaptée aux besoins de notre application.
 
+Grâce à la mise en place du catalogue, nous pouvons maintenant ajouter des documents, les rechercher à partir de leur numéro et parcourir les éléments enregistrés tout en protégeant la collection interne.
+
+Nous avons également défini une règle d'égalité commune à tous les documents avec les méthodes "equals()" et "hashCode()".
+
+Ce travail nous permet de faire évoluer progressivement notre bibliothèque de prêt tout en respectant les objectifs fixés pour chaque jalon.
+
+---
