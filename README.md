@@ -1,208 +1,96 @@
-Bibliothèque de prêt — Jalon 3 : Interfaces et collections
+# Bibliothèque de prêt — Version 1.0 (Jalon 4)
 
-Groupe 4 – Projet Java de programmation orientée objet.
+**Groupe 4** — Projet Java de Programmation Orientée Objet (2iE)  
+**Tag GitHub :** `jalon-4` / `version-1.0`
 
----
+## Membres du groupe (Groupe 4)
 
-1. Objectif du jalon
-
-Le Jalon 3 ajoute les éléments demandés dans le sujet :
-
-- le contrat "CatalogueDocuments" ;
-- une implémentation du catalogue en mémoire avec une collection adaptée ;
-- l'ajout, la recherche par numéro et le parcours des documents ;
-- l'encapsulation de la collection interne ;
-- les méthodes "equals()" et "hashCode()" dans "Document" ;
-- les essais cumulés des jalons précédents et du Jalon 3.
-
-"ServicePret" n'est pas introduit : il est prévu au Jalon 4.
+| Nom et Prénoms | Identifiant étudiant | Adresse courriel |
+|---|---|---|
+| **KARGOUGOU Sidi** | `20260153` | `zarkawi.kargougou@2ie-edu.org` |
+| **ZIO Jolene Shirel** | `20240007` | `shirel.zio@2ie-edu.org` |
+| **OUEDRAOGO Murielle** | `20240209` | `muriel.ouedraogo@2ie-edu.org` |
 
 ---
 
-2. Comparaison des collections
-
-Dans ce jalon, nous avons étudié trois structures principales du framework Java : "List", "Set" et "Map".
-
-Structure| Unicité| Ordre| Recherche par numéro
-"List"| N'accepte pas automatiquement les identifiants uniques| Conserve l'ordre d'insertion| Parcours généralement nécessaire : O(n)
-"Set"| Unicité selon "equals()" et "hashCode()"| Dépend de l'implémentation| Pas d'accès direct par numéro
-"Map"| Les clés sont uniques| Dépend de l'implémentation| Accès direct à partir de la clé
-
-Le catalogue utilise une "HashMap<Integer, Document>". Le numéro immuable du document sert de clé. Ce choix répond directement au besoin d'identification unique et de recherche par numéro.
-
-L'ordre de parcours n'est pas garanti par "HashMap" et notre projet ne dépend pas d'un ordre particulier.
-
----
-
-3. Contrat "CatalogueDocuments"
-
-Nous avons créé l'interface "CatalogueDocuments" afin de définir les opérations nécessaires au fonctionnement du catalogue, sans imposer la structure de données utilisée pour les réaliser.
-
-L'interface expose trois méthodes :
-
-- "ajouter(Document document)" : ajoute un document et renvoie "false" si son numéro existe déjà.
-- "rechercherParNumero(int numero)" : renvoie un "Optional<Document>", vide si aucun document ne correspond au numéro recherché.
-- "parcourir()" : renvoie une liste des documents du catalogue sans donner directement accès à la collection interne.
-
-Ce choix permet de séparer le contrat de son implémentation. Le programme peut ainsi utiliser le catalogue à travers l'interface "CatalogueDocuments", sans dépendre directement de la classe "CatalogueDocumentsMemoire".
-
----
-
-4. Implémentation "CatalogueDocumentsMemoire"
-
-La classe "CatalogueDocumentsMemoire" implémente l'interface "CatalogueDocuments".
-
-Nous avons choisi une "HashMap<Integer, Document>" pour stocker les documents en mémoire.
-
-La clé correspond au numéro du document et la valeur correspond à l'objet "Document" associé.
-
-4.1. Ajout d'un document
-
-La méthode "ajouter()" vérifie d'abord que le document reçu n'est pas "null".
-
-Elle récupère ensuite son numéro et vérifie si celui-ci est déjà présent dans la "HashMap".
-
-- Si le numéro existe déjà, la méthode renvoie "false".
-- Sinon, le document est ajouté et la méthode renvoie "true".
-
-Cette vérification permet d'éviter d'enregistrer deux documents portant le même numéro.
-
-4.2. Recherche par numéro
-
-La méthode "rechercherParNumero()" vérifie que le numéro fourni est strictement positif.
-
-Elle utilise ensuite la méthode "get()" de la "HashMap" pour retrouver le document correspondant.
-
-Le résultat est retourné sous forme d'un "Optional<Document>". Cela permet de représenter clairement le cas où aucun document n'est trouvé, sans retourner directement une valeur "null".
-
-4.3. Parcours des documents
-
-La méthode "parcourir()" permet de consulter les documents enregistrés dans le catalogue.
-
-Elle construit une nouvelle "ArrayList" à partir des valeurs de la "HashMap", puis applique "Collections.unmodifiableList()".
-
-La liste retournée ne peut donc pas être modifiée par l'appelant. La collection interne du catalogue reste privée et protégée.
-
----
-
-5. Gestion de l'égalité : "equals()" et "hashCode()"
-
-Dans la classe abstraite "Document", nous avons redéfini les méthodes "equals()" et "hashCode()".
-
-Nous avons choisi de considérer que deux documents sont égaux lorsqu'ils possèdent le même numéro.
-
-La méthode "equals()" compare donc les numéros des deux documents. La méthode "hashCode()" calcule le code de hachage à partir de ce même numéro.
-
-Le numéro étant déclaré "final", il ne peut pas être modifié après la création du document.
-
-Les deux méthodes respectent ainsi la règle suivante : deux objets considérés comme égaux doivent posséder le même code de hachage.
-
-Nous avons également déclaré ces méthodes "final" afin que les sous-classes "Livre" et "Periodique" conservent la même règle d'égalité.
-
-Cette règle permet d'identifier les documents indépendamment de leur type concret.
-
----
-
-6. Encapsulation de la collection interne
-
-Nous avons déclaré la "HashMap" comme attribut "private final" dans "CatalogueDocumentsMemoire".
-
-Ce choix empêche les autres classes d'accéder directement à la collection utilisée pour stocker les documents.
-
-La méthode "parcourir()" ne retourne pas la "HashMap" elle-même. Elle retourne une copie de ses valeurs sous forme de liste non modifiable.
-
-Cela permet aux autres parties du programme de consulter les documents sans pouvoir modifier directement la structure interne du catalogue.
-
-L'encapsulation garantit ainsi que les opérations d'ajout et de recherche restent contrôlées par les méthodes prévues dans l'interface.
-
----
-
-7. Complexité des principales opérations
-
-Avec notre choix d'une "HashMap", les principales opérations possèdent les complexités moyennes suivantes :
-
-Opération| Complexité moyenne
-Vérification d'un numéro avec "containsKey()"| O(1)
-Ajout avec "put()"| O(1)
-Recherche avec "get()"| O(1)
-Parcours de tous les documents| O(n)
-
-Les opérations de recherche, de vérification et d'ajout ont une complexité moyenne en O(1), car la "HashMap" utilise le hachage pour accéder aux éléments à partir de leur clé.
-
-Le parcours possède une complexité en O(n), car il faut examiner l'ensemble des documents enregistrés.
-
-Ces complexités sont des moyennes et peuvent varier selon les collisions et le fonctionnement interne de la "HashMap".
-
----
-
-8. Essais et vérifications
-
-Nous avons conservé les essais réalisés lors des jalons précédents et ajouté les vérifications nécessaires pour le Jalon 3.
-
-Les vérifications portent notamment sur :
-
-- l'égalité de deux documents ayant le même numéro ;
-- la cohérence entre "equals()" et "hashCode()" ;
-- l'ajout d'un document au catalogue ;
-- le refus d'un document dont le numéro existe déjà ;
-- la recherche d'un document existant ;
-- la recherche d'un document inexistant ;
-- le refus d'un numéro invalide ;
-- le refus de l'ajout d'un document "null" ;
-- le parcours des documents ;
-- la protection de la liste retournée.
-
-Ces essais permettent de vérifier que les nouvelles fonctionnalités fonctionnent conformément aux règles définies dans notre projet.
-
-Les résultats des essais manuels sont présentés dans le fichier "ESSAIS_MANUELS.md" et dans la classe de tests du projet.
-
----
-
-9. Diagramme de classes
-
-Le diagramme de classes du Jalon 3 présente l'organisation du projet après l'ajout du catalogue.
-
-Il représente notamment :
-
-- l'interface "CatalogueDocuments" ;
-- la classe "CatalogueDocumentsMemoire" qui implémente cette interface ;
-- l'utilisation de "Document" dans le catalogue ;
-- la hiérarchie entre "Document", "Livre" et "Periodique" ;
-- les autres relations déjà présentes dans le projet.
-
-Le diagramme est fourni sous deux formats :
-
-- "Diagramme_Jalon3.puml" : fichier source PlantUML ;
-- "Diagramme_Jalon3.png" : représentation du diagramme sous forme d'image.
-
----
-
-10. Exécution du projet
-
-Le projet peut être compilé et exécuté depuis un terminal à partir du dossier contenant les fichiers Java.
-
-Compilation :
-
-javac *.java
-
-Exécution du programme principal :
-
-java Main
-
-Pour lancer les essais, il faut exécuter la classe de tests correspondante.
-
----
-
-Conclusion
-
-Ce troisième jalon nous a permis de mieux comprendre l'utilisation des interfaces et des collections en Java.
-
-Nous avons appris à séparer le contrat d'une fonctionnalité de son implémentation et à choisir une structure de données adaptée aux besoins de notre application.
-
-Grâce à la mise en place du catalogue, nous pouvons maintenant ajouter des documents, les rechercher à partir de leur numéro et parcourir les éléments enregistrés tout en protégeant la collection interne.
-
-Nous avons également défini une règle d'égalité commune à tous les documents avec les méthodes "equals()" et "hashCode()".
-
-Ce travail nous permet de faire évoluer progressivement notre bibliothèque de prêt tout en respectant les objectifs fixés pour chaque jalon.
-
----
+Application Java en mode console pour gérer un catalogue de documents (livres, périodiques) et leurs prêts. Aucune bibliothèque externe n'est nécessaire pour l'application ; JUnit 4 n'est requis que pour l'exécution de la suite de tests `ServicePretTest`.
+
+## 1. Contenu du dépôt
+
+| Fichier / Dossier | Rôle |
+|---|---|
+| `Document`, `Livre`, `Periodique`, `Auteur`, `Utilisateur` | Modèle objet et invariants (Jalons 1–2) |
+| `Empruntable`, `Pretable` | Contrats de prêt d'un document |
+| `CatalogueDocuments`, `CatalogueDocumentsMemoire` | Catalogue : contrat et implémentation `HashMap` (Jalon 3) |
+| `ServicePret`, `Pret` | Règles de prêt, échéances, retards et atomicité (Jalon 4) |
+| `BibliothequeException` et 4 sous-classes | Hiérarchie d'exceptions métier vérifiées (Jalon 4) |
+| `Main` | Démonstration d'un scénario complet en ligne de commande |
+| `Tests` | 58 vérifications automatisées héritées des Jalons 1 à 3 |
+| `ServicePretTest` | 24 essais automatisés JUnit 4 du Jalon 4 |
+| `Recette.java`, `ESSAIS_MANUELS.md` | Recette : 29 scénarios exécutables et fiche des résultats observés |
+| `docs/` | Diagramme de classes du Jalon 4 (`Diagramme_Jalon4.puml` et `Diagramme_Jalon4.png`) |
+| `executer_essais.sh` | Script compilant et exécutant toutes les suites d'essais sur poste propre |
+
+## 2. Compilation et exécution (sur poste propre)
+
+### Sans JUnit (application, recette et tests des jalons 1–3)
+```bash
+javac $(ls *.java | grep -v ServicePretTest)
+java Main           # démonstration en console
+java Tests          # 58 vérifications des jalons 1 à 3
+java Recette        # recette : 29 scénarios de bout en bout
+```
+
+### Avec JUnit 4 (toutes les suites, y compris les 24 tests JUnit)
+Placez `junit-4.13.2.jar` et `hamcrest-core-1.3.jar` dans un dossier `lib/` (ou passez leurs chemins en arguments) :
+
+```bash
+chmod +x executer_essais.sh
+./executer_essais.sh
+# Ou avec des chemins personnalisés :
+./executer_essais.sh /chemin/vers/junit-4.13.2.jar /chemin/vers/hamcrest-core-1.3.jar
+```
+
+## 3. Fonctionnalités
+
+- Ajouter un document au catalogue, le retrouver par numéro unique, parcourir le catalogue sans exposer la collection interne.
+- Emprunter un document : la date d'échéance dépend dynamiquement du sous-type (21 jours pour un `Livre`, 7 jours pour un `Periodique`).
+- Retourner un document emprunté et libérer le quota de l'utilisateur.
+- Limiter le nombre de prêts simultanés par utilisateur (3 par défaut, paramétrable à la construction).
+- Lister les prêts en cours, les prêts d'un utilisateur donné et les prêts strictement en retard.
+
+## 4. Choix de conception du Jalon 4
+
+**Séparer le document et le prêt.** `Document` conserve son état propre (disponibilité, emprunteur). `ServicePret` orchestre le processus métier : quota par utilisateur, calcul des échéances, détection des retards. `Pret` est un objet valeur immuable.
+
+**Deux familles d'erreurs distinctes.**
+- Un refus métier légitime (`DocumentIntrouvableException`, `DocumentDejaEmprunteException`, `DocumentNonEmprunteException`, `LimiteEmpruntsException`) hérite de `BibliothequeException` (exception *vérifiée*) : l'appelant est contraint de traiter le refus.
+- Une erreur de programmation ou précondition violée (`utilisateur == null`, `numero <= 0`, paramètres de construction invalides) lève `IllegalArgumentException` (exception *non vérifiée*).
+
+**Atomicité (« tout ou rien »).**
+1. Tous les contrôles d'invariants et de règles métier sont effectués avant toute mutation d'état.
+2. La seule étape modifiant deux états (marquage du document comme emprunté, puis création/enregistrement du `Pret`) est encadrée par un bloc `try/catch` compensatoire : en cas d'exception, le document est remis à l'état disponible.
+3. Aucun échec métier ou technique ne laisse le système dans un état partiellement modifié.
+
+**Faible couplage au catalogue.** `ServicePret` dépend uniquement de l'interface `CatalogueDocuments`. Un test JUnit dédié valide son fonctionnement avec une implémentation alternative (`CatalogueEnListe`).
+
+**Horloge injectable.** `ServicePret` reçoit un `java.time.Clock`, permettant de tester déterministement les échéances et le franchissement des dates de retard.
+
+## 5. Synthèse des essais et validation
+
+- `Tests` : **58 vérifications réussies** (Jalons 1 à 3).
+- `ServicePretTest` : **24 essais JUnit 4 réussis** (cas nominaux, cas limites, erreurs de programmation, atomicité après panne, contournement du service, substitution du catalogue).
+- **Total automatisé : 82 tests**, complétés par `Recette` (**29 scénarios conformes** documentés dans `ESSAIS_MANUELS.md`).
+
+## 6. Limites connues
+
+- Le service n'est pas synchronisé pour des accès concurrents (`HashMap`).
+- Les données sont conservées uniquement en mémoire (pas de persistance fichier/base de données).
+- `Document.emprunter()` reste publique pour la compatibilité avec les jalons 1–3 : un emprunt direct contournant `ServicePret` est détecté (nouvel emprunt et retour via le service refusés) mais non bloqué au niveau de `Document`.
+- Le retour d'un document ne vérifie pas l'identité de l'utilisateur qui restitue l'ouvrage.
+
+## 7. Diagramme de classes
+
+Les sources et le rendu graphique du diagramme de classes du Jalon 4 sont disponibles dans `docs/` :
+- `docs/Diagramme_Jalon4.puml`
+- `docs/Diagramme_Jalon4.png`

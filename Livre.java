@@ -1,8 +1,7 @@
 /**
  * Un livre est un document.
  * Ses auteurs sont des objets possedes par le livre (composition).
- * Un tableau simple est utilise a ce jalon ; les collections Java ne sont
- * pas introduites ici car elles relèvent du jalon suivant.
+ * Le tableau interne est copie defensivement a chaque acces.
  */
 public class Livre extends Document {
     private final int nombrePages;

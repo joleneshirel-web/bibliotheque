@@ -1,0 +1,103 @@
+@startuml Diagramme_Jalon4
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+interface Empruntable {
+  + emprunter(utilisateur: Utilisateur): boolean
+  + retourner(): boolean
+  + estEmprunte(): boolean
+  + dureePret(): int
+  + getEmprunteur(): Utilisateur
+}
+
+interface Pretable extends Empruntable
+
+abstract class Document implements Pretable, Cloneable {
+  - numero: int {final}
+  - titre: String {final}
+  - disponible: boolean
+  - emprunteur: Utilisateur
+  + getNumero(): int
+  + getTitre(): String
+  + isDisponible(): boolean
+  + {abstract} dureePret(): int
+  + equals(objet: Object): boolean
+  + hashCode(): int
+}
+
+class Livre extends Document {
+  - nombrePages: int {final}
+  - auteurs: Auteur[]
+  + getNombrePages(): int
+  + getAuteurs(): Auteur[]
+  + dureePret(): int
+}
+
+class Periodique extends Document {
+  - organisme: String {final}
+  - numeroParution: int {final}
+  + getOrganisme(): String
+  + getNumeroParution(): int
+  + dureePret(): int
+}
+
+class Auteur <<final>> {
+  - nom: String {final}
+  + getNom(): String
+}
+
+class Utilisateur {
+  - id: int {final}
+  - nom: String {final}
+  - email: String {final}
+  + getId(): int
+  + getNom(): String
+  + getEmail(): String
+}
+
+interface CatalogueDocuments {
+  + ajouter(document: Document): boolean
+  + rechercherParNumero(numero: int): Optional<Document>
+  + parcourir(): List<Document>
+}
+
+class CatalogueDocumentsMemoire implements CatalogueDocuments {
+  - documents: Map<Integer, Document>
+}
+
+class Pret <<final>> {
+  - numeroDocument: int {final}
+  - utilisateur: Utilisateur {final}
+  - dateEmprunt: LocalDate {final}
+  - dateEcheance: LocalDate {final}
+  + estEnRetard(jour: LocalDate): boolean
+}
+
+class ServicePret {
+  + {static} LIMITE_PAR_DEFAUT: int = 3
+  - catalogue: CatalogueDocuments {final}
+  - horloge: Clock {final}
+  - limiteEmprunts: int {final}
+  - pretsEnCours: Map<Integer, Pret>
+  + emprunter(numeroDocument: int, utilisateur: Utilisateur): Pret
+  + retourner(numeroDocument: int): Pret
+  + rechercherPret(numeroDocument: int): Optional<Pret>
+  + pretsEnCours(): List<Pret>
+  + pretsDe(utilisateur: Utilisateur): List<Pret>
+  + pretsEnRetard(): List<Pret>
+}
+
+class BibliothequeException extends Exception
+class DocumentIntrouvableException extends BibliothequeException
+class DocumentDejaEmprunteException extends BibliothequeException
+class DocumentNonEmprunteException extends BibliothequeException
+class LimiteEmpruntsException extends BibliothequeException
+
+Livre "1" *-- "1..*" Auteur : compose
+Document "0..*" --> "0..1" Utilisateur : emprunteur
+CatalogueDocumentsMemoire "1" o-- "0..*" Document : stocke
+ServicePret --> "1" CatalogueDocuments : utilise
+ServicePret "1" *-- "0..*" Pret : gere
+Pret --> "1" Utilisateur : concerne
+ServicePret ..> BibliothequeException : leve
+@enduml

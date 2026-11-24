@@ -27,6 +27,23 @@ public class Utilisateur {
     }
 
     @Override
+    public boolean equals(Object objet) {
+        if (this == objet) {
+            return true;
+        }
+        if (!(objet instanceof Utilisateur)) {
+            return false;
+        }
+        Utilisateur autre = (Utilisateur) objet;
+        return id == autre.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(id);
+    }
+
+    @Override
     public String toString() {
         return nom + " (ID : " + id + ")";
     }

@@ -62,9 +62,9 @@ public class Tests {
         verifier("Nom d'auteur vide refuse", refuse(() -> new Livre(6, "Titre", 10, " ")));
         verifier("Numero de parution negatif refuse", refuse(() -> new Periodique(7, "Revue", "Redaction", -1)));
         verifier("Organisme vide refuse", refuse(() -> new Periodique(7, "Revue", " ", 1)));
-        verifier("Identifiant utilisateur nul refuse", refuse(() -> new Utilisateur(0, "Awa", "awa@example.com")));
-        verifier("Nom utilisateur vide refuse", refuse(() -> new Utilisateur(8, " ", "awa@example.com")));
-        verifier("Courriel invalide refuse", refuse(() -> new Utilisateur(8, "Awa", "awa.example.com")));
+        verifier("Identifiant utilisateur nul refuse", refuse(() -> new Utilisateur(0, "KARGOUGOU Sidi", "zarkawi.kargougou@2ie-edu.org")));
+        verifier("Nom utilisateur vide refuse", refuse(() -> new Utilisateur(8, " ", "zarkawi.kargougou@2ie-edu.org")));
+        verifier("Courriel invalide refuse", refuse(() -> new Utilisateur(8, "KARGOUGOU Sidi", "zarkawi.kargougou.2ie-edu.org")));
 
         System.out.println("\n=== 6. Conservation du clonage du Jalon 1 ===");
         Livre original = new Livre(9, "Original", 100, "Auteur Original");
