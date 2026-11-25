@@ -9,7 +9,7 @@
 |---|---|---|
 | **KARGOUGOU Sidi** | `20260153` | `zarkawi.kargougou@2ie-edu.org` |
 | **ZIO Jolene Shirel** | `20240007` | `shirel.zio@2ie-edu.org` |
-| **OUEDRAOGO Murielle** | `20240209` | `muriel.ouedraogo@2ie-edu.org` |
+| **OUEDRAOGO Murielle** | `20240209` | `murielle.ouedraogo@2ie-edu.org` |
 
 ---
 
